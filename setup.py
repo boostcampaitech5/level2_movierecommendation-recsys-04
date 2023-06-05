@@ -79,8 +79,9 @@ items.rename(
 users.rename(columns={"user": "user:token", "time": "time:float"}, inplace=True)
 
 os.makedirs("./data", exist_ok=True)
-interactions.to_csv("./data/data.inter", index=False)
-users.to_csv("./data/data.user", index=False)
-items.to_csv("./data/data.item", index=False)
+os.makedirs("./data/data", exist_ok=True)
+interactions.to_csv("./data/data/data.inter", index=False)
+users.to_csv("./data/data/data.user", index=False)
+items.to_csv("./data/data/data.item", index=False)
 
 print("########## setup done!")
