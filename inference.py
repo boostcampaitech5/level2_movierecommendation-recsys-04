@@ -1,3 +1,4 @@
+import os
 import argparse
 import torch
 import numpy as np
@@ -15,9 +16,7 @@ K = 10
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", "-mp", type=str, help="path of models")
-    parser.add_argument(
-        "--config_ver", "-c", type=str, default="0", help="version of configs"
-    )
+    parser.add_argument("--config_ver", "-c", type=str, default="0", help="version of configs")
 
     args = parser.parse_args()
 
@@ -26,6 +25,9 @@ if __name__ == "__main__":
     inference_config["dataset"] = "data"
     inference_config["save_dataset"] = False
     inference_config["save_dataloaders"] = False
+    inference_config["topk"] = [10]
+    inference_config["metrics"] = ["Recall"]
+    inference_config["valid_metric"] = ["Recall@10"]
 
     print("########## create dataset")
     inference_dataset = create_dataset(inference_config)
@@ -38,9 +40,9 @@ if __name__ == "__main__":
     ) = data_preparation(inference_config, inference_dataset)
 
     print("########## create model")
-    inference_model = get_model(inference_config["model"])(
-        inference_config, inference_test_data.dataset
-    ).to(inference_config["device"])
+    inference_model = get_model(inference_config["model"])(inference_config, inference_test_data.dataset).to(
+        inference_config["device"]
+    )
     inference_model.load_state_dict(checkpoint["state_dict"])
     inference_model.load_other_parameter(checkpoint.get("other_parameter"))
 
@@ -114,8 +116,9 @@ if __name__ == "__main__":
 
     # 데이터 저장
     dataframe = pd.DataFrame(result, columns=["user", "item"])
+    os.makedirs("./output", exist_ok=True)
     dataframe.to_csv(
-        f"./output/{inference_config['model']}_Ver{args.config_ver}_submission.csv",
+        f"./output/{inference_config['model']}_Ver_{args.config_ver}_submission.csv",
         index=False,
     )
     print("########## inference done!")
