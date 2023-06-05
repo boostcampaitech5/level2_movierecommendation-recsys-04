@@ -215,7 +215,21 @@ pyrightconfig.json
 # .vscode는 각자 로컬에서 관리
 .vscode
 # poetry
-/poetry.lock
+poetry.lock
 /pyproject.toml
 # .pre-commit-config.yaml 마찬가지로 각자 로컬에서 관리
 .pre-commit-config.yaml
+
+### MovieRec 프로젝트
+*.inter
+*.item
+*.user
+.empty
+
+/MovieRec/saved
+/MovieRec/output
+
+### wandb
+wandb
+log
+log_tensorboard
