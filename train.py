@@ -1,12 +1,13 @@
+import os
+import sys
+import importlib
 import numpy as np
 import pandas as pd
-import importlib
+
 
 import argparse
 import logging
 from logging import getLogger
-
-import sys
 
 sys.path.append("./config/context_aware-rec")
 sys.path.append("./config/general-rec")
@@ -75,6 +76,15 @@ if __name__ == "__main__":
 
     # trainer loading and initialization
     trainer = Trainer(config, model)
+    trainer.wandblogger._wandb.run.name = (
+        config["model"] + "_Ver_" + args.config_ver
+    )  # wandb run name
+    trainer.wandblogger._wandb.run.save()
+
+    trainer.saved_model_file = os.path.join(
+        config["checkpoint_dir"],
+        "{}_Ver_{}.pth".format(config["model"], args.config_ver),
+    )  # model(pth) name
 
     # model training
     print("########## start training")
