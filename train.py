@@ -25,6 +25,7 @@ from recbole.utils import (
     get_trainer,
     set_color,
 )
+from recbole.utils.utils import get_local_time
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -99,3 +100,17 @@ if __name__ == "__main__":
     print("########## start evaluation")
     test_result = trainer.evaluate(test_data)
     logger.info(set_color("test result", "yellow") + f": {test_result}")
+
+    ### log file name change
+    log_path = f"./log/{args.model}/"
+    log_list = os.listdir(log_path)
+    for file_name in log_list:
+        if file_name.startswith(
+            f"{args.model}-{config['dataset']}-{get_local_time()[:11]}"
+        ):
+            os.rename(
+                log_path + file_name,
+                log_path + f"{args.model}_{args.config_ver}.log",
+            )
+            print(1)
+            break
