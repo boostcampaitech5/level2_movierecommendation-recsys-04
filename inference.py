@@ -16,7 +16,9 @@ K = 10
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", "-mp", type=str, help="path of models")
-    parser.add_argument("--config_ver", "-c", type=str, default="0", help="version of configs")
+    parser.add_argument(
+        "--config_ver", "-c", type=str, default="0", help="version of configs"
+    )
 
     args = parser.parse_args()
 
@@ -40,9 +42,9 @@ if __name__ == "__main__":
     ) = data_preparation(inference_config, inference_dataset)
 
     print("########## create model")
-    inference_model = get_model(inference_config["model"])(inference_config, inference_test_data.dataset).to(
-        inference_config["device"]
-    )
+    inference_model = get_model(inference_config["model"])(
+        inference_config, inference_test_data.dataset
+    ).to(inference_config["device"])
     inference_model.load_state_dict(checkpoint["state_dict"])
     inference_model.load_other_parameter(checkpoint.get("other_parameter"))
 
@@ -100,7 +102,9 @@ if __name__ == "__main__":
 
         arr_ind_argsort = np.argsort(arr_ind)[np.arange(len(rating_pred)), ::-1]
 
-        batch_pred_list = ind[np.arange(len(rating_pred))[:, None], arr_ind_argsort]
+        batch_pred_list = ind[
+            np.arange(len(rating_pred))[:, None], arr_ind_argsort
+        ]
 
         if pred_list is None:
             pred_list = batch_pred_list
