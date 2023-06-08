@@ -1,4 +1,4 @@
-from base import BaseConfig
+from ..base import BaseConfig
 
 
 class Ver0(BaseConfig):
@@ -16,7 +16,9 @@ class Ver0(BaseConfig):
                 "mode": "full",
             },
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_1(BaseConfig):
@@ -36,7 +38,9 @@ class Ver0_0_1(BaseConfig):
             "latent_dimendion": [64],  # 128 -> 64
             "mlp_hidden_size": [200],  # 600 -> 200
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_2(BaseConfig):
@@ -57,7 +61,9 @@ class Ver0_0_2(BaseConfig):
             "mlp_hidden_size": [200],  # 600 -> 200
             "learning_rate": 0.005,  # 0.001 -> 0.005
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_3(BaseConfig):
@@ -78,7 +84,9 @@ class Ver0_0_3(BaseConfig):
             "mlp_hidden_size": [200],  # 600 -> 200
             "learning_rate": 0.0005,  # 0.001 -> 0.0005
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_4(BaseConfig):
@@ -99,7 +107,9 @@ class Ver0_0_4(BaseConfig):
             "mlp_hidden_size": [200],  # 600 -> 200
             "learning_rate": 0.0005,  # 0.001 -> 0.0005
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_5(BaseConfig):
@@ -119,4 +129,6 @@ class Ver0_0_5(BaseConfig):
                 "mode": "full",
             },
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )

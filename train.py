@@ -1,19 +1,11 @@
 import os
 import sys
-import importlib
-import numpy as np
-import pandas as pd
-
-
 import argparse
+
+import importlib
 import logging
 from logging import getLogger
 
-
-sys.path.append("./config/context_aware-rec")
-sys.path.append("./config/general-rec")
-sys.path.append("./config/knowledge-rec")
-sys.path.append("./config/sequential-rec")
 
 from recbole.config import Config
 from recbole.data import create_dataset, data_preparation
@@ -26,27 +18,59 @@ from recbole.utils import (
     set_color,
 )
 
+# sys.path.append("./config/context_aware_rec")
+# sys.path.append("./config/general_rec")
+# sys.path.append("./config/knowledge_rec")
+# sys.path.append("./config/sequential_rec")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", "-m", type=str, help="name of models")
+    parser.add_argument(
+        "--model",
+        "-m",
+        type=str,
+        help="name of models",
+        default="MultiVAE",
+        choices=["MultiVAE", "SASRec"],
+    )
     parser.add_argument(
         "--config_ver", "-c", type=str, default="0", help="version of configs"
     )
 
     args = parser.parse_args()
 
+    # args에 모델을 추가할 때 어느 카테고리에 해당하는 모델인지 추가 부탁드릴게요!
+    if args.model in ["MultiVAE"]:
+        model_category = "general_rec"
+    elif args.model in ["SASRec"]:
+        model_category = "sequential_rec"
+
     try:
-        module = importlib.import_module(args.model)
+        module = importlib.import_module(
+            f"config.{model_category}.{args.model}"
+        )
         ver_class = getattr(module, f"Ver{args.config_ver}")
         configs = ver_class()
     except ImportError:
         print(f"Module '{args.model}' not found")
     except AttributeError:
-        print(f"Class 'Ver{args.config_ver}' not found in module '{args.model}'")
+        print(
+            f"Class 'Ver{args.config_ver}' not found in module '{args.model}'"
+        )
+
+    dataset_name = "data"
+    # if args.model == "SASRec":
+    #     print("------- Change Datset to Sequential Data -------")
+    #     dataset_name = "sequential_data"
+
+    print("configs : ", configs.parameter_dict)
 
     config = Config(
-        model=args.model, dataset="data", config_dict=configs.parameter_dict
+        model=args.model,
+        dataset=dataset_name,
+        config_dict=configs.parameter_dict,
     )
+    config["wandb_project"] = f"Recbole-{args.model}"
 
     # init random seed
     init_seed(config["seed"], config["reproducibility"])
@@ -69,10 +93,15 @@ if __name__ == "__main__":
     # dataset splitting
     print("########## create dataloader")
     train_data, valid_data, test_data = data_preparation(config, dataset)
+    # logger.info(train_data.dataset)
+    # logger.info(valid_data.dataset)
+    # logger.info(test_data.dataset)
 
     # model loading and initialization
     print("########## create model")
-    model = get_model(config["model"])(config, train_data.dataset).to(config["device"])
+    model = get_model(config["model"])(config, train_data.dataset).to(
+        config["device"]
+    )
     logger.info(model)
 
     # trainer loading and initialization
