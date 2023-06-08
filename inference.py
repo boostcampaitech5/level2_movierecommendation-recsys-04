@@ -17,7 +17,9 @@ K = 10
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", "-mp", type=str, help="path of models")
-    parser.add_argument("--config_ver", "-c", type=str, default="0", help="version of configs")
+    parser.add_argument(
+        "--config_ver", "-c", type=str, default="0", help="version of configs"
+    )
 
     args = parser.parse_args()
 
@@ -62,7 +64,9 @@ if __name__ == "__main__":
 
         arr_ind_argsort = np.argsort(arr_ind)[np.arange(len(rating_pred)), ::-1]
 
-        batch_pred_list = ind[np.arange(len(rating_pred))[:, None], arr_ind_argsort]
+        batch_pred_list = ind[
+            np.arange(len(rating_pred))[:, None], arr_ind_argsort
+        ]
 
         # 예측값 저장
         if pred_list is None:
