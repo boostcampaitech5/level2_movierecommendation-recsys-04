@@ -24,7 +24,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # model, dataset 불러오기
-    config, model, dataset, train_data, valid_data, test_data = load_data_and_model(args.model_path)
+    (
+        config,
+        model,
+        dataset,
+        train_data,
+        valid_data,
+        test_data,
+    ) = load_data_and_model(args.model_path)
     del train_data, valid_data
 
     config["save_dataset"] = False
@@ -64,9 +71,7 @@ if __name__ == "__main__":
 
         arr_ind_argsort = np.argsort(arr_ind)[np.arange(len(rating_pred)), ::-1]
 
-        batch_pred_list = ind[
-            np.arange(len(rating_pred))[:, None], arr_ind_argsort
-        ]
+        batch_pred_list = ind[np.arange(len(rating_pred))[:, None], arr_ind_argsort]
 
         # 예측값 저장
         if pred_list is None:
@@ -84,8 +89,9 @@ if __name__ == "__main__":
     # 데이터 저장
     dataframe = pd.DataFrame(result, columns=["user", "item"])
     os.makedirs("./output", exist_ok=True)
+    os.makedirs(f"./output/{config['model']}", exist_ok=True)
     dataframe.to_csv(
-        f"./output/{config['model']}_Ver_{args.config_ver}_submission.csv",
+        f"./output/{config['model']}/{config['model']}_Ver_{args.config_ver}_submission.csv",
         index=False,
     )
     print("########## inference done!")
