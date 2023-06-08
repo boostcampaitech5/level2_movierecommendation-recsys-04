@@ -29,9 +29,7 @@ from recbole.utils import (
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", "-m", type=str, help="name of models")
-    parser.add_argument(
-        "--config_ver", "-c", type=str, default="0", help="version of configs"
-    )
+    parser.add_argument("--config_ver", "-c", type=str, default="0", help="version of configs")
 
     args = parser.parse_args()
 
@@ -46,9 +44,8 @@ if __name__ == "__main__":
             f"Class 'Ver{args.config_ver}' not found in module '{args.model}'"
         )
 
-    config = Config(
-        model=args.model, dataset="data", config_dict=configs.parameter_dict
-    )
+    config = Config(model=args.model, dataset="data", config_dict=configs.parameter_dict)
+    config["wandb_project"] = f"Recbole-{args.model}"
 
     # init random seed
     init_seed(config["seed"], config["reproducibility"])
@@ -81,9 +78,7 @@ if __name__ == "__main__":
 
     # trainer loading and initialization
     trainer = Trainer(config, model)
-    trainer.wandblogger._wandb.run.name = (
-        config["model"] + "_Ver_" + args.config_ver
-    )  # wandb run name
+    trainer.wandblogger._wandb.run.name = config["model"] + "_Ver_" + args.config_ver  # wandb run name
     trainer.wandblogger._wandb.run.save()
 
     trainer.saved_model_file = os.path.join(
