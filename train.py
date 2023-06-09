@@ -1,19 +1,11 @@
 import os
 import sys
-import importlib
-import numpy as np
-import pandas as pd
-
-
 import argparse
+
+import importlib
 import logging
 from logging import getLogger
 
-
-sys.path.append("./config/context_aware-rec")
-sys.path.append("./config/general-rec")
-sys.path.append("./config/knowledge-rec")
-sys.path.append("./config/sequential-rec")
 
 from recbole.config import Config
 from recbole.data import create_dataset, data_preparation
@@ -25,11 +17,24 @@ from recbole.utils import (
     get_trainer,
     set_color,
 )
+from recbole.utils.utils import get_local_time
+
+sys.path.append("./config/context_aware-rec")
+sys.path.append("./config/general-rec")
+sys.path.append("./config/knowledge-rec")
+sys.path.append("./config/sequential-rec")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", "-m", type=str, help="name of models")
-    parser.add_argument("--config_ver", "-c", type=str, default="0", help="version of configs")
+    parser.add_argument(
+        "--model",
+        "-m",
+        type=str,
+        help="name of models",
+    )
+    parser.add_argument(
+        "--config_ver", "-c", type=str, default="0", help="version of configs"
+    )
 
     args = parser.parse_args()
 
@@ -44,8 +49,19 @@ if __name__ == "__main__":
             f"Class 'Ver{args.config_ver}' not found in module '{args.model}'"
         )
 
-    config = Config(model=args.model, dataset="data", config_dict=configs.parameter_dict)
+    dataset_name = "data"
+
+    print("configs : ", configs.parameter_dict)
+
+    config = Config(
+        model=args.model,
+        dataset=dataset_name,
+        config_dict=configs.parameter_dict,
+    )
     config["wandb_project"] = f"Recbole-{args.model}"
+    config["checkpoint_dir"] = os.path.join(
+        config["checkpoint_dir"], args.model
+    )
 
     # init random seed
     init_seed(config["seed"], config["reproducibility"])
@@ -68,6 +84,9 @@ if __name__ == "__main__":
     # dataset splitting
     print("########## create dataloader")
     train_data, valid_data, test_data = data_preparation(config, dataset)
+    # logger.info(train_data.dataset)
+    # logger.info(valid_data.dataset)
+    # logger.info(test_data.dataset)
 
     # model loading and initialization
     print("########## create model")
@@ -78,7 +97,9 @@ if __name__ == "__main__":
 
     # trainer loading and initialization
     trainer = Trainer(config, model)
-    trainer.wandblogger._wandb.run.name = config["model"] + "_Ver_" + args.config_ver  # wandb run name
+    trainer.wandblogger._wandb.run.name = (
+        config["model"] + "_Ver_" + args.config_ver
+    )  # wandb run name
     trainer.wandblogger._wandb.run.save()
 
     trainer.saved_model_file = os.path.join(
@@ -96,3 +117,17 @@ if __name__ == "__main__":
     print("########## start evaluation")
     test_result = trainer.evaluate(test_data)
     logger.info(set_color("test result", "yellow") + f": {test_result}")
+
+    ### log file name change
+    log_path = f"./log/{args.model}/"
+    log_list = os.listdir(log_path)
+    for file_name in log_list:
+        if file_name.startswith(
+            f"{args.model}-{config['dataset']}-{get_local_time()[:11]}"
+        ):
+            os.rename(
+                log_path + file_name,
+                log_path + f"{args.model}_{args.config_ver}.log",
+            )
+            print(1)
+            break

@@ -9,6 +9,14 @@ def preprocess_inter(inter: pd.DataFrame) -> pd.DataFrame:
     필요 시 채워주시면 됩니다.
     """
 
+    # user2idx = {v: k for k, v in enumerate(sorted(set(inter.user)))}
+    # item2idx = {v: k for k, v in enumerate(sorted(set(inter.item)))}
+
+    # inter.user = inter.user.map(user2idx)
+    # inter.item = inter.item.map(item2idx)
+
+    # inter.groupby("user").sample(n=2, random_state=42)
+
     return inter
 
 
@@ -56,15 +64,30 @@ items = (
     .merge(years, on="item")
 )
 
+
 interactions = preprocess_inter(interactions)
 items = preprocess_item(items)
 users = preprocess_user(users)
 
-# recbole 에서 요구하는 column 형식으로 변환
 interactions.rename(
-    columns={"user": "user:token", "item": "item:token", "time": "time:float"},
+    columns={
+        "user": "user:token",
+        "item": "item:token",
+        "time": "time:float",
+    },
     inplace=True,
 )
+
+# # recbole 에서 요구하는 column 형식으로 변환
+# interactions.rename(
+#     columns={
+#         "user:token": "user_id:token",
+#         "item:token": "item_id:token",
+#         "time:float": "timestamp:float",
+#     },
+#     inplace=True,
+# )
+
 items.rename(
     columns={
         "item": "item:token",
@@ -78,10 +101,19 @@ items.rename(
 )
 users.rename(columns={"user": "user:token", "time": "time:float"}, inplace=True)
 
+
+# Make General Rec for DataSet
 os.makedirs("./data", exist_ok=True)
 os.makedirs("./data/data", exist_ok=True)
 interactions.to_csv("./data/data/data.inter", index=False)
 users.to_csv("./data/data/data.user", index=False)
 items.to_csv("./data/data/data.item", index=False)
+
+# # Make Sequential Rec for DataSet
+# os.makedirs("./data", exist_ok=True)
+# os.makedirs("./data/sequential_data", exist_ok=True)
+# interactions.to_csv("./data/sequential_data/sequential_data.inter", index=False)
+# users.to_csv("./data/sequential_data/sequential_data.user", index=False)
+# items.to_csv("./data/sequential_data/sequential_data.item", index=False)
 
 print("########## setup done!")
