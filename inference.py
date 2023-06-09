@@ -10,6 +10,7 @@ from recbole.quick_start.quick_start import load_data_and_model
 from recbole.utils.case_study import full_sort_topk
 from recbole.data import data_preparation
 from recbole.data.utils import create_dataset
+from recbole.quick_start import load_data_and_model
 
 import warnings
 
@@ -77,6 +78,7 @@ if __name__ == "__main__":
         batch_pred_list = batch_pred_list.clone().detach().cpu().numpy()
         batch_pred_scores = batch_pred_scores.clone().detach().cpu().numpy()
 
+        # 예측값 저장
         if pred_list is None:
             pred_list = batch_pred_list
             pred_scores = batch_pred_scores
@@ -105,13 +107,13 @@ if __name__ == "__main__":
     os.makedirs("./output", exist_ok=True)
     os.makedirs(f"./output/{args.model}", exist_ok=True)
     dataframe.to_csv(
-        f"./output/{args.model}/{inference_config['model']}_Ver_{args.config_ver}_submission.csv",
+        f"./output/{args.model}/{inference_config['model']}_Ver_{args.config_ver}_with_item_scores.csv",
         index=False,
     )
 
     dataframe = dataframe.drop(columns=["item_score"])
     dataframe.to_csv(
-        f"./output/{args.model}/{inference_config['model']}_Ver_{args.config_ver}_test.csv",
+        f"./output/{args.model}/{inference_config['model']}_Ver_{args.config_ver}_submission.csv",
         index=False,
     )
 
