@@ -1,4 +1,4 @@
-from base import BaseConfig
+from .general_base import BaseConfig
 
 
 class Ver0(BaseConfig):
@@ -129,7 +129,9 @@ class Ver0_0_5(BaseConfig):
                 "mode": "full",
             },
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_6(BaseConfig):
@@ -148,7 +150,9 @@ class Ver0_0_6(BaseConfig):
             },
             "train_batch_size": 256,  # 2048 -> 256
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_7(BaseConfig):
@@ -168,7 +172,9 @@ class Ver0_0_7(BaseConfig):
             "dropout_prob": 0.1,  # 0.5 -> 0.1
             "stopping_step": 20,  # 10 -> 20
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_8(BaseConfig):
@@ -188,7 +194,9 @@ class Ver0_0_8(BaseConfig):
             "seed": 42,  # 2020 -> 42
             "stopping_step": 20,  # 10 -> 20
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_9(BaseConfig):
@@ -207,7 +215,9 @@ class Ver0_0_9(BaseConfig):
             },
             "stopping_step": 20,  # 10 -> 20
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
 
 
 class Ver0_0_10(BaseConfig):
@@ -227,4 +237,6 @@ class Ver0_0_10(BaseConfig):
             "learning_rate": 0.0001,  # 0.001 -> 0.0001
             "stopping_step": 20,  # 10 -> 20
         }
-        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )

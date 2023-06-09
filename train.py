@@ -1,19 +1,11 @@
 import os
 import sys
-import importlib
-import numpy as np
-import pandas as pd
-
-
 import argparse
+
+import importlib
 import logging
 from logging import getLogger
 
-
-sys.path.append("./config/context_aware-rec")
-sys.path.append("./config/general-rec")
-sys.path.append("./config/knowledge-rec")
-sys.path.append("./config/sequential-rec")
 
 from recbole.config import Config
 from recbole.data import create_dataset, data_preparation
@@ -27,9 +19,19 @@ from recbole.utils import (
 )
 from recbole.utils.utils import get_local_time
 
+sys.path.append("./config/context_aware-rec")
+sys.path.append("./config/general-rec")
+sys.path.append("./config/knowledge-rec")
+sys.path.append("./config/sequential-rec")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", "-m", type=str, help="name of models")
+    parser.add_argument(
+        "--model",
+        "-m",
+        type=str,
+        help="name of models",
+    )
     parser.add_argument(
         "--config_ver", "-c", type=str, default="0", help="version of configs"
     )
@@ -43,13 +45,23 @@ if __name__ == "__main__":
     except ImportError:
         print(f"Module '{args.model}' not found")
     except AttributeError:
-        print(f"Class 'Ver{args.config_ver}' not found in module '{args.model}'")
+        print(
+            f"Class 'Ver{args.config_ver}' not found in module '{args.model}'"
+        )
+
+    dataset_name = "data"
+
+    print("configs : ", configs.parameter_dict)
 
     config = Config(
-        model=args.model, dataset="data", config_dict=configs.parameter_dict
+        model=args.model,
+        dataset=dataset_name,
+        config_dict=configs.parameter_dict,
     )
     config["wandb_project"] = f"Recbole-{args.model}"
-    config["checkpoint_dir"] = os.path.join(config["checkpoint_dir"], args.model)
+    config["checkpoint_dir"] = os.path.join(
+        config["checkpoint_dir"], args.model
+    )
 
     # init random seed
     init_seed(config["seed"], config["reproducibility"])
@@ -72,10 +84,15 @@ if __name__ == "__main__":
     # dataset splitting
     print("########## create dataloader")
     train_data, valid_data, test_data = data_preparation(config, dataset)
+    # logger.info(train_data.dataset)
+    # logger.info(valid_data.dataset)
+    # logger.info(test_data.dataset)
 
     # model loading and initialization
     print("########## create model")
-    model = get_model(config["model"])(config, train_data.dataset).to(config["device"])
+    model = get_model(config["model"])(config, train_data.dataset).to(
+        config["device"]
+    )
     logger.info(model)
 
     # trainer loading and initialization
