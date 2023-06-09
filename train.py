@@ -18,10 +18,10 @@ from recbole.utils import (
     set_color,
 )
 
-# sys.path.append("./config/context_aware_rec")
-# sys.path.append("./config/general_rec")
-# sys.path.append("./config/knowledge_rec")
-# sys.path.append("./config/sequential_rec")
+sys.path.append("./config/context_aware-rec")
+sys.path.append("./config/general-rec")
+sys.path.append("./config/knowledge-rec")
+sys.path.append("./config/sequential-rec")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -30,8 +30,6 @@ if __name__ == "__main__":
         "-m",
         type=str,
         help="name of models",
-        default="MultiVAE",
-        choices=["MultiVAE", "SASRec"],
     )
     parser.add_argument(
         "--config_ver", "-c", type=str, default="0", help="version of configs"
@@ -39,16 +37,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # args에 모델을 추가할 때 어느 카테고리에 해당하는 모델인지 추가 부탁드릴게요!
-    if args.model in ["MultiVAE"]:
-        model_category = "general_rec"
-    elif args.model in ["SASRec"]:
-        model_category = "sequential_rec"
-
     try:
-        module = importlib.import_module(
-            f"config.{model_category}.{args.model}"
-        )
+        module = importlib.import_module(args.model)
         ver_class = getattr(module, f"Ver{args.config_ver}")
         configs = ver_class()
     except ImportError:
@@ -59,9 +49,6 @@ if __name__ == "__main__":
         )
 
     dataset_name = "data"
-    # if args.model == "SASRec":
-    #     print("------- Change Datset to Sequential Data -------")
-    #     dataset_name = "sequential_data"
 
     print("configs : ", configs.parameter_dict)
 
