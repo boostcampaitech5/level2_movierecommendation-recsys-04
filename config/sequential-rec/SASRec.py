@@ -1,4 +1,4 @@
-from .sequential_base import SequenceBaseConfig
+from sequential_base import SequenceBaseConfig
 
 
 class Ver0(SequenceBaseConfig):
