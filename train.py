@@ -51,6 +51,8 @@ if __name__ == "__main__":
 
     dataset_name = "data"
 
+    print("configs : ", configs.parameter_dict)
+
     config = Config(
         model=args.model,
         dataset=dataset_name,
