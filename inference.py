@@ -105,15 +105,15 @@ if __name__ == "__main__":
     dataframe = pd.DataFrame(answer, columns=["user", "item", "item_score"])
 
     os.makedirs("./output", exist_ok=True)
-    os.makedirs(f"./output/{args.model}", exist_ok=True)
+    os.makedirs(f"./output/{inference_config['model']}", exist_ok=True)
     dataframe.to_csv(
-        f"./output/{args.model}/{inference_config['model']}_Ver_{args.config_ver}_with_item_scores.csv",
+        f"./output/{inference_config['model']}/{inference_config['model']}_Ver_{args.config_ver}_with_item_scores.csv",
         index=False,
     )
 
     dataframe = dataframe.drop(columns=["item_score"])
     dataframe.to_csv(
-        f"./output/{args.model}/{inference_config['model']}_Ver_{args.config_ver}_submission.csv",
+        f"./output/{inference_config['model']}/{inference_config['model']}_Ver_{args.config_ver}_submission.csv",
         index=False,
     )
 

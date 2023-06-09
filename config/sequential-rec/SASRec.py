@@ -1,4 +1,4 @@
-from .sequential_base import SequenceBaseConfig
+from sequential_base import SequenceBaseConfig
 
 
 class Ver0(SequenceBaseConfig):
@@ -16,6 +16,7 @@ class Ver0(SequenceBaseConfig):
                 "group_by": "user",
                 "mode": "full",
             },
+            "learning_rate": 0.001,
         }
         self.model_parameter = {
             # Model Parameter Default Value
@@ -71,4 +72,28 @@ class Ver0_0_1(Ver0):
 class Ver0_0_2(Ver0):
     def __init__(self):
         super().__init__()
+        self.parameter_dict["hidden_dropout_prob"] = 0.2
+        self.parameter_dict["attn_dropout_prob"] = 0.2
+        self.parameter_dict["hidden_size"] = 10
+        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 150
+
+
+class Ver0_0_3(Ver0):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["hidden_size"] = 20
+        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 150
+
+
+class Ver0_0_4(Ver0):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["hidden_size"] = 30
+        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 150
+
+
+class Ver0_0_5(Ver0):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["hidden_size"] = 40
         self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 150
