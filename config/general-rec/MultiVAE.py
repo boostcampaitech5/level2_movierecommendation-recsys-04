@@ -1,4 +1,4 @@
-from .general_base import BaseConfig
+from general_base import BaseConfig
 
 
 class Ver0(BaseConfig):
