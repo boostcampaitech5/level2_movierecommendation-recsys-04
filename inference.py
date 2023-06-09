@@ -24,7 +24,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # model, dataset 불러오기
-    config, model, dataset, train_data, valid_data, test_data = load_data_and_model(args.model_path)
+    (
+        config,
+        model,
+        dataset,
+        train_data,
+        valid_data,
+        test_data,
+    ) = load_data_and_model(args.model_path)
     del train_data, valid_data
 
     config["save_dataset"] = False
