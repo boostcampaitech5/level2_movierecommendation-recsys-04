@@ -63,10 +63,6 @@ def sweep_run(args, config, model, logger):
     logger.info(set_color("test result", "yellow") + f": {test_result}")
     wandb.log({"recall@10": test_result["recall@10"]})
 
-    if "best_score" not in wandb.config:
-        wandb.config.update({"best_score": 0, "allow_val_change": True})
-    print(f"best score: {wandb.config.best_score}")
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -134,7 +130,7 @@ if __name__ == "__main__":
         "name": "sweep",  # sweep 이름 설정
         "metric": {"goal": "maximize", "name": "recall@10"},
         "parameters": {  # 파라미터 설정
-            "epochs": {"values": [2, 3]},
+            "epochs": {"values": [1, 2]},
             "learning_rate": {"max": 0.1, "min": 0.0001},
         },
     }
@@ -148,7 +144,7 @@ if __name__ == "__main__":
     wandb.agent(
         sweep_id,
         function=lambda: sweep_run(args, config, model, logger),
-        count=5,  # 튜닝 실행(run) 횟수
+        count=2,  # 튜닝 실행(run) 횟수
     )
 
     # # Delete models other than the best model
