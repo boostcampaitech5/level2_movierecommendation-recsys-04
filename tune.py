@@ -26,7 +26,7 @@ sys.path.append("./config/sequential-rec")
 
 
 def sweep_run(args, config, logger, train_data, valid_data, test_data, model):
-    wandb.init(config=config)
+    wandb.init(config=wandb.config)
     wandb.run.name = (
         "Ver_" + args.config_ver + "_" + str(wandb.run.id)
     )  # wandb run name
@@ -71,7 +71,6 @@ def sweep_run(args, config, logger, train_data, valid_data, test_data, model):
     print("########## start evaluation")
     test_result = trainer.evaluate(test_data)
     logger.info(set_color("test result", "yellow") + f": {test_result}")
-    wandb.log({"recall@10": test_result["recall@10"]})
 
 
 if __name__ == "__main__":
@@ -148,7 +147,7 @@ if __name__ == "__main__":
     sweep_configuration = {
         "method": "random",  # choose between grid, random, and bayes
         "name": "sweep",  # set sweep name
-        "metric": {"goal": "maximize", "name": "recall@10"},
+        "metric": {"goal": "maximize", "name": "valid/recall@10"},
         "parameters": {  # set parameters to tune
             "epochs": {"values": [100, 300, 500]},
             "learning_rate": {"max": 0.01, "min": 0.0001},
