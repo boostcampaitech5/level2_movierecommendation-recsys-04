@@ -25,7 +25,7 @@ sys.path.append("./config/knowledge-rec")
 sys.path.append("./config/sequential-rec")
 
 
-def sweep_run(args, config, model, logger):
+def sweep_run(args, config, logger, train_data, valid_data, test_data, model):
     wandb.init(config=config)
     wandb.run.name = (
         "Ver_" + args.config_ver + "_" + str(wandb.run.id)
@@ -34,12 +34,22 @@ def sweep_run(args, config, model, logger):
     # init random seed
     init_seed(config["seed"], config["reproducibility"])
 
-    # hyperparameter
+    ############### TODO: Modify this part! ###############
+    # hyperparameters to tune
     config["learning_rate"] = wandb.config.learning_rate
     config["epochs"] = wandb.config.epochs
+    #######################################################
 
     # write config info into log
     logger.info(config)
+
+    if args.use_model_param:
+        # model loading and initialization
+        print("########## create model")
+        model = get_model(config["model"])(config, train_data.dataset).to(
+            config["device"]
+        )
+        logger.info(model)
 
     # trainer loading and initialization
     trainer = Trainer(config, model)
@@ -74,6 +84,13 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--config_ver", "-c", type=str, default="0", help="version of configs"
+    )
+    parser.add_argument(
+        "--use_model_param",
+        "-ump",
+        type=bool,
+        default=False,
+        help="use model parameters for tuning",
     )
 
     args = parser.parse_args()
@@ -117,23 +134,27 @@ if __name__ == "__main__":
     print("########## create dataloader")
     train_data, valid_data, test_data = data_preparation(config, dataset)
 
-    # model loading and initialization
-    print("########## create model")
-    model = get_model(config["model"])(config, train_data.dataset).to(
-        config["device"]
-    )
-    logger.info(model)
+    model = None
+    if not args.use_model_param:
+        # model loading and initialization
+        print("########## create model")
+        model = get_model(config["model"])(config, train_data.dataset).to(
+            config["device"]
+        )
+        logger.info(model)
 
+    ############### TODO: Modify this part! ###############
     # Define sweep config
     sweep_configuration = {
-        "method": "random",
-        "name": "sweep",  # sweep 이름 설정
+        "method": "random",  # choose between grid, random, and bayes
+        "name": "sweep",  # set sweep name
         "metric": {"goal": "maximize", "name": "recall@10"},
-        "parameters": {  # 파라미터 설정
-            "epochs": {"values": [1, 2]},
-            "learning_rate": {"max": 0.1, "min": 0.0001},
+        "parameters": {  # set parameters to tune
+            "epochs": {"values": [100, 300, 500]},
+            "learning_rate": {"max": 0.01, "min": 0.0001},
         },
     }
+    #######################################################
 
     # Initialize sweep by passing in config
     sweep_id = wandb.sweep(
@@ -143,8 +164,10 @@ if __name__ == "__main__":
     # Start sweep job
     wandb.agent(
         sweep_id,
-        function=lambda: sweep_run(args, config, model, logger),
-        count=2,  # 튜닝 실행(run) 횟수
+        function=lambda: sweep_run(
+            args, config, logger, train_data, valid_data, test_data, model
+        ),
+        count=10,  ##### TODO: Set the number of tuning runs
     )
 
     # # Delete models other than the best model
