@@ -55,7 +55,6 @@ class Ver0(SequenceBaseConfig):
         # Update
         self.sequential_parameter.update(self.model_parameter)
         self.base_parameter_dict.update(self.sequential_parameter)
-
         self.parameter_dict = dict(
             self.base_parameter_dict, **self.parameter_dict
         )
@@ -74,26 +73,63 @@ class Ver0_0_2(Ver0):
         super().__init__()
         self.parameter_dict["hidden_dropout_prob"] = 0.2
         self.parameter_dict["attn_dropout_prob"] = 0.2
-        self.parameter_dict["hidden_size"] = 10
-        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 150
+        self.parameter_dict["hidden_size"] = 10  # 64 -> 10
+        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 150  # 50 -> 150
 
 
 class Ver0_0_3(Ver0):
     def __init__(self):
         super().__init__()
-        self.parameter_dict["hidden_size"] = 20
-        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 150
+        self.parameter_dict["epochs"] = 30
+        self.parameter_dict["hidden_size"] = 10
+        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 50
 
 
 class Ver0_0_4(Ver0):
     def __init__(self):
         super().__init__()
-        self.parameter_dict["hidden_size"] = 30
-        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 150
+        self.parameter_dict["hidden_dropout_prob"] = 0.2
+        self.parameter_dict["attn_dropout_prob"] = 0.2
+        self.parameter_dict["epochs"] = 100
+        self.parameter_dict["hidden_size"] = 100
+        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 50
 
 
 class Ver0_0_5(Ver0):
     def __init__(self):
         super().__init__()
-        self.parameter_dict["hidden_size"] = 40
-        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 150
+        self.parameter_dict["learning_rate"] = 0.0001
+        self.parameter_dict["hidden_dropout_prob"] = 0.2
+        self.parameter_dict["attn_dropout_prob"] = 0.2
+        self.parameter_dict["epochs"] = 1000
+        self.parameter_dict["hidden_size"] = 100
+        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 50
+
+
+class Ver0_0_6(Ver0):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["learning_rate"] = 0.0001
+        self.parameter_dict["hidden_dropout_prob"] = 0.2
+        self.parameter_dict["attn_dropout_prob"] = 0.2
+        self.parameter_dict["epochs"] = 100
+        self.parameter_dict["hidden_size"] = 100
+        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 100
+
+
+class Ver0_0_7(Ver0):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["hidden_dropout_prob"] = 0.2
+        self.parameter_dict["attn_dropout_prob"] = 0.2
+        self.parameter_dict["epochs"] = 10
+        self.parameter_dict["item_attribute"] = "item"
+
+
+class Ver0_0_8(Ver0):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["hidden_dropout_prob"] = 0.2
+        self.parameter_dict["attn_dropout_prob"] = 0.2
+        self.parameter_dict["epochs"] = 1
+        self.parameter_dict["item_attribute"] = "item"
