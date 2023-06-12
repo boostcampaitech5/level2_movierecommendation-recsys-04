@@ -31,31 +31,21 @@ if __name__ == "__main__":
 
 
     print(f"########## Load data and model from || {args.model_path}")
-    inference_config, model, dataset, _, _, _ = load_data_and_model(
-        args.model_path
-    )
-
-    inference_config["dataset"] = "data"
-
-    inference_config["save_dataset"] = False
-    inference_config["save_dataloaders"] = False
+    (
+        inference_config,
+        model,
+        inference_dataset,
+        _,
+        _,
+        inference_test_data,
+    ) = load_data_and_model(args.model_path)
 
     # user, item id -> token 변환 array
     user_id = inference_config["USER_ID_FIELD"]
     item_id = inference_config["ITEM_ID_FIELD"]
 
-    user_id2token = dataset.field2id_token[user_id]
-    item_id2token = dataset.field2id_token[item_id]
-
-    print("########## create dataset")
-    inference_dataset = create_dataset(inference_config)
-
-    print("########## create dataloader")
-    (
-        _,
-        inference_valid_data,
-        inference_test_data,
-    ) = data_preparation(inference_config, inference_dataset)
+    user_id2token = inference_dataset.field2id_token[user_id]
+    item_id2token = inference_dataset.field2id_token[item_id]
 
     # user id list
     all_user_list = torch.arange(1, len(user_id2token)).view(
