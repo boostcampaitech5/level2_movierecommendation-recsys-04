@@ -145,7 +145,7 @@ if __name__ == "__main__":
     ############### TODO: Modify this part! ###############
     # Define sweep config
     sweep_configuration = {
-        "method": "random",  # choose between grid, random, and bayes
+        "method": "bayes",  # choose between grid, random, and bayes
         "name": "sweep",  # set sweep name
         "metric": {"goal": "maximize", "name": "valid/recall@10"},
         "parameters": {  # set parameters to tune
