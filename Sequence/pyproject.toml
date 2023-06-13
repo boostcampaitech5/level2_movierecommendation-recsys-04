@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "MovieRec-Sequence"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "MovieRec-Sequence"}]
+
+[tool.poetry.dependencies]
+python = "3.8.5"
+python-dateutil = "2.8.2"
+
+
+[tool.poetry.group.dev.dependencies]
+torch = "1.10.0"
+numpy = "1.20.0"
+scipy = "1.6.0"
+hyperopt = "0.2.5"
+pandas = "1.4.0"
+tqdm = "4.48.2"
+scikit-learn = "0.23.2"
+pyyaml = "5.3.1"
+colorlog = "4.7.2"
+colorama = "0.4.4"
+tensorboard = "2.5.0"
+thop = "0.1.1.post2207130030"
+ray = "1.13.0"
+tabulate = "0.8.10"
+plotly = "4.0.0"
+texttable = "0.9.0"
+setuptools = "59.5.0"
+wandb = "^0.15.3"
+black = "^23.3.0"
+pytz = "2021.3"
+six = "1.16.0"
+typing-extensions = "4.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
