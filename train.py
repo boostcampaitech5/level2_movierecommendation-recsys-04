@@ -6,6 +6,11 @@ import importlib
 import logging
 from logging import getLogger
 
+from signal import signal, SIGPIPE, SIG_DFL
+
+# RecBole 내부 DataLoader 의 num_worker 오류 개선을 위한 코드
+signal(SIGPIPE, SIG_DFL)
+
 
 from recbole.config import Config
 from recbole.data import create_dataset, data_preparation
@@ -96,7 +101,8 @@ if __name__ == "__main__":
     logger.info(model)
 
     # trainer loading and initialization
-    trainer = Trainer(config, model)
+    ### trainer = Trainer(config, model)
+    trainer = get_trainer(config["MODEL_TYPE"], config["model"])(config, model)
     trainer.wandblogger._wandb.run.name = (
         config["model"] + "_Ver_" + args.config_ver
     )  # wandb run name
