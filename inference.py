@@ -25,11 +25,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-
-    # 라벨 인코딩
-    train_df = pd.read_csv("/opt/ml/input/data/train/train_ratings.csv")
-
-
     print(f"########## Load data and model from || {args.model_path}")
     (
         inference_config,
