@@ -37,7 +37,8 @@ def sweep_run(args, config, logger, train_data, valid_data, test_data, model):
     ############### TODO: Modify this part! ###############
     # hyperparameters to tune
     config["learning_rate"] = wandb.config.learning_rate
-    config["epochs"] = wandb.config.epochs
+    # config["epochs"] = wandb.config.epochs
+    config["reg_weight"] = wandb.config.reg_weight
     #######################################################
 
     # write config info into log
@@ -146,10 +147,13 @@ if __name__ == "__main__":
     # Define sweep config
     sweep_configuration = {
         "method": "bayes",  # choose between grid, random, and bayes
-        "name": "sweep",  # set sweep name
+        "name": "sweep_EASE_0",  # set sweep name
         "metric": {"goal": "maximize", "name": "valid/recall@10"},
         "parameters": {  # set parameters to tune
-            "epochs": {"values": [100, 300, 500]},
+            # "epochs": {"values": [100, 300, 500]},
+            "reg_weight": {
+                "values": [50.0, 100.0, 250.0, 500.0, 1000.0, 1500.0]
+            },
             "learning_rate": {"max": 0.01, "min": 0.0001},
         },
     }
