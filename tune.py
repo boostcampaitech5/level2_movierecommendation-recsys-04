@@ -25,7 +25,7 @@ sys.path.append("./config/knowledge-rec")
 sys.path.append("./config/sequential-rec")
 
 
-def sweep_run(args, config, logger, train_data, valid_data, test_data, model):
+def sweep_run(args, config):
     wandb.init(config=wandb.config)
     wandb.run.name = (
         "Ver_" + args.config_ver + "_" + str(wandb.run.id)
@@ -41,16 +41,31 @@ def sweep_run(args, config, logger, train_data, valid_data, test_data, model):
     config["reg_weight"] = wandb.config.reg_weight
     #######################################################
 
+    # logger initialization
+    init_logger(config)
+    logger = getLogger()
+    # Create handlers
+    c_handler = logging.StreamHandler()
+    c_handler.setLevel(logging.INFO)
+    logger.addHandler(c_handler)
+
     # write config info into log
     logger.info(config)
 
-    if args.use_model_param:
-        # model loading and initialization
-        print("########## create model")
-        model = get_model(config["model"])(config, train_data.dataset).to(
-            config["device"]
-        )
-        logger.info(model)
+    print("########## create dataset")
+    dataset = create_dataset(config)
+    logger.info(dataset)
+
+    # dataset splitting
+    print("########## create dataloader")
+    train_data, valid_data, test_data = data_preparation(config, dataset)
+
+    # model loading and initialization
+    print("########## create model")
+    model = get_model(config["model"])(config, train_data.dataset).to(
+        config["device"]
+    )
+    logger.info(model)
 
     # trainer loading and initialization
     trainer = Trainer(config, model)
@@ -85,13 +100,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config_ver", "-c", type=str, default="0", help="version of configs"
     )
-    parser.add_argument(
-        "--use_model_param",
-        "-ump",
-        type=bool,
-        default=False,
-        help="use model parameters for tuning",
-    )
 
     args = parser.parse_args()
 
@@ -118,31 +126,6 @@ if __name__ == "__main__":
         config["checkpoint_dir"], args.model
     )
 
-    # logger initialization
-    init_logger(config)
-    logger = getLogger()
-    # Create handlers
-    c_handler = logging.StreamHandler()
-    c_handler.setLevel(logging.INFO)
-    logger.addHandler(c_handler)
-
-    print("########## create dataset")
-    dataset = create_dataset(config)
-    logger.info(dataset)
-
-    # dataset splitting
-    print("########## create dataloader")
-    train_data, valid_data, test_data = data_preparation(config, dataset)
-
-    model = None
-    if not args.use_model_param:
-        # model loading and initialization
-        print("########## create model")
-        model = get_model(config["model"])(config, train_data.dataset).to(
-            config["device"]
-        )
-        logger.info(model)
-
     ############### TODO: Modify this part! ###############
     # Define sweep config
     sweep_configuration = {
@@ -167,9 +150,7 @@ if __name__ == "__main__":
     # Start sweep job
     wandb.agent(
         sweep_id,
-        function=lambda: sweep_run(
-            args, config, logger, train_data, valid_data, test_data, model
-        ),
+        function=lambda: sweep_run(args, config),
         count=10,  ##### TODO: Set the number of tuning runs
     )
 
