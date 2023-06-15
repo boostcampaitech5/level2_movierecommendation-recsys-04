@@ -9,7 +9,6 @@ packages = [{include = "MovieRec"}]
 [tool.poetry.dependencies]
 python = "3.8.5"
 recbole = "^1.1.1"
-screen = "^1.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -32,7 +31,6 @@ texttable = "0.9.0"
 setuptools = "59.5.0"
 wandb = "^0.15.3"
 black = "^23.3.0"
-ipykernel = "^6.23.1"
 
 [build-system]
 requires = ["poetry-core"]
