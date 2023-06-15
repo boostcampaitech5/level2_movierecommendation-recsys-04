@@ -8,7 +8,7 @@ class Ver0(SequenceBaseConfig):
         self.parameter_dict = {
             "load_col": {"inter": ["user", "item", "time"]},
             "neg_sampling": None,
-            "epochs": 200,
+            "epochs": 20,
             "topk": [10],
             "eval_args": {
                 "split": {"LS": "valid_and_test"},
@@ -72,3 +72,38 @@ class Ver0_0_3(Ver0):
         super().__init__()
         self.parameter_dict["epochs"] = 100
         self.parameter_dict["learning_rate"] = 0.0001
+
+
+class Ver0_0_4(Ver0):  # downsizing model weight
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["hidden_size"] = 32
+        self.parameter_dict["inner_size"] = 128
+
+
+class Ver0_0_5(Ver0):  # downsizing reg param
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["mask_ratio"] = 0.1
+        self.parameter_dict["hidden_dropout_prob"] = 0.2
+        self.parameter_dict["attn_dropout_prob"] = 0.2
+
+
+class Ver0_0_6(Ver0):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["loss_type"] = "BPR"
+        self.parameter_dict["train_neg_sample_args"] = {
+            "distribution": "uniform",
+            "sample_num": 1,
+        }
+
+
+class Ver0_0_7(Ver0):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["item_inter_num_interval"] = "[10,inf)"
+        self.parameter_dict["learning_rate"] = 0.0005
+        self.parameter_dict["save_dataset"] = False
+        self.parameter_dict["save_dataloaders"] = False
+        self.parameter_dict["stopping_step"] = 100
