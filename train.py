@@ -5,6 +5,13 @@ import argparse
 import importlib
 import logging
 from logging import getLogger
+import yaml
+import wandb
+
+from signal import signal, SIGPIPE, SIG_DFL
+
+# RecBole 내부 DataLoader 의 num_worker 오류 개선을 위한 코드
+signal(SIGPIPE, SIG_DFL)
 
 
 from recbole.config import Config
@@ -49,9 +56,19 @@ if __name__ == "__main__":
             f"Class 'Ver{args.config_ver}' not found in module '{args.model}'"
         )
 
-    dataset_name = "data"
+    try:
+        with open("./config.yaml") as file:
+            config_file = yaml.load(file, Loader=yaml.FullLoader)
 
-    print("configs : ", configs.parameter_dict)
+        sweep_name = config_file["name"]
+    except FileNotFoundError:
+        sweep_name = ""
+
+    # init wandb settings
+    wandb.init(project=f"Recbole-{args.model}", config=configs.parameter_dict)
+    configs.parameter_dict.update(wandb.config)
+
+    dataset_name = "data"
 
     config = Config(
         model=args.model,
@@ -60,8 +77,10 @@ if __name__ == "__main__":
     )
     config["wandb_project"] = f"Recbole-{args.model}"
     config["checkpoint_dir"] = os.path.join(
-        config["checkpoint_dir"], args.model
+        config["checkpoint_dir"], args.model, sweep_name
     )
+
+    print("configs : ", config)
 
     # init random seed
     init_seed(config["seed"], config["reproducibility"])
@@ -96,15 +115,22 @@ if __name__ == "__main__":
     logger.info(model)
 
     # trainer loading and initialization
-    trainer = Trainer(config, model)
-    trainer.wandblogger._wandb.run.name = (
-        config["model"] + "_Ver_" + args.config_ver
-    )  # wandb run name
-    trainer.wandblogger._wandb.run.save()
+    ### trainer = Trainer(config, model)
+    trainer = get_trainer(config["MODEL_TYPE"], config["model"])(config, model)
 
+    if sweep_name == "":  # when just train
+        run_name = "{}_Ver_{}".format(config["model"], args.config_ver)
+        model_name = run_name + ".pth"
+    else:  # when sweep
+        sweep_run_num = wandb.run.name.split("-")[-1]
+        run_name = "{}_Ver_{}_{}-{}".format(
+            config["model"], args.config_ver, sweep_name, sweep_run_num
+        )
+
+    trainer.wandblogger._wandb.run.name = run_name  # wandb run name
     trainer.saved_model_file = os.path.join(
         config["checkpoint_dir"],
-        "{}_Ver_{}.pth".format(config["model"], args.config_ver),
+        run_name + ".pth",
     )  # model(pth) name
 
     # model training

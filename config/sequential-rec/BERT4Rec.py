@@ -8,7 +8,7 @@ class Ver0(SequenceBaseConfig):
         self.parameter_dict = {
             "load_col": {"inter": ["user", "item", "time"]},
             "neg_sampling": None,
-            "epochs": 50,
+            "epochs": 20,
             "topk": [10],
             "eval_args": {
                 "split": {"LS": "valid_and_test"},
@@ -102,7 +102,6 @@ class Ver0_0_6(Ver0):
 class Ver0_0_7(Ver0):
     def __init__(self):
         super().__init__()
-        self.parameter_dict["epochs"] = 200
         self.parameter_dict["item_inter_num_interval"] = "[10,inf)"
         self.parameter_dict["learning_rate"] = 0.0005
         self.parameter_dict["save_dataset"] = False
@@ -140,3 +139,4 @@ class Ver0_0_9(Ver0):
         self.parameter_dict["mask_ratio"] = 0.1
         self.parameter_dict["hidden_dropout_prob"] = 0.2
         self.parameter_dict["attn_dropout_prob"] = 0.2
+
