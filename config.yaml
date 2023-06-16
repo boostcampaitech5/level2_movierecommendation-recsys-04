@@ -1,0 +1,29 @@
+project: Recbole-Caser # Recbole-모델명
+name: sweep-01 # sweep 이름
+description: "Caser Ver 0.0.1" # 모델명, 관련 버전, 특이사항 등의 설명
+command:
+  - python
+  - train.py
+  - --model
+  - "Caser"
+  - --config_ver
+  - "0_0_1"
+method: bayes
+metric:
+  name: valid/recall@10
+  goal: maximize
+parameters:
+  epochs:
+    values: [10, 30, 50, 100, 150]
+  learning_rate:
+    min: 0.001
+    max: 0.01
+  dropout_prob:
+    min: 0.1
+    max: 0.4
+  n_v:
+    values: [16, 32, 64, 128]
+  n_h:
+    values: [32, 64, 128, 256]
+  MAX_ITEM_LIST_LENGTH:
+    values: [5, 10, 15]
