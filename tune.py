@@ -27,9 +27,7 @@ sys.path.append("./config/sequential-rec")
 
 def sweep_run(args, config):
     wandb.init(config=wandb.config)
-    wandb.run.name = (
-        "Ver_" + args.config_ver + "_" + str(wandb.run.id)
-    )  # wandb run name
+    wandb.run.name = "Ver_" + args.config_ver + "_" + str(wandb.run.id)  # wandb run name
 
     # init random seed
     init_seed(config["seed"], config["reproducibility"])
@@ -68,13 +66,11 @@ def sweep_run(args, config):
     logger.info(model)
 
     # trainer loading and initialization
-    trainer = Trainer(config, model)
+    trainer = get_trainer(config["MODEL_TYPE"], config["model"])(config, model)
 
     trainer.saved_model_file = os.path.join(
         config["checkpoint_dir"],
-        "{}_Ver_{}_{}.pth".format(
-            config["model"], args.config_ver, wandb.run.id
-        ),
+        "{}_Ver_{}_{}.pth".format(config["model"], args.config_ver, wandb.run.id),
     )  # model(pth) name
 
     # model training
@@ -110,9 +106,7 @@ if __name__ == "__main__":
     except ImportError:
         print(f"Module '{args.model}' not found")
     except AttributeError:
-        print(
-            f"Class 'Ver{args.config_ver}' not found in module '{args.model}'"
-        )
+        print(f"Class 'Ver{args.config_ver}' not found in module '{args.model}'")
 
     dataset_name = "data"
 
@@ -122,9 +116,7 @@ if __name__ == "__main__":
         config_dict=configs.parameter_dict,
     )
     config["wandb_project"] = f"Recbole-{args.model}"
-    config["checkpoint_dir"] = os.path.join(
-        config["checkpoint_dir"], args.model
-    )
+    config["checkpoint_dir"] = os.path.join(config["checkpoint_dir"], args.model)
 
     ############### TODO: Modify this part! ###############
     # Define sweep config
@@ -143,9 +135,7 @@ if __name__ == "__main__":
     #######################################################
 
     # Initialize sweep by passing in config
-    sweep_id = wandb.sweep(
-        sweep=sweep_configuration, project=config["wandb_project"]
-    )
+    sweep_id = wandb.sweep(sweep=sweep_configuration, project=config["wandb_project"])
 
     # Start sweep job
     wandb.agent(
@@ -154,9 +144,3 @@ if __name__ == "__main__":
         count=10,  ##### TODO: Set the number of tuning runs
     )
 
-    # # Delete models other than the best model
-    # log_path = f"./log/{args.model}/"
-    # log_list = os.listdir(log_path)
-    # for file_name in log_list:
-    #     if "" in file_name:
-    #         os.remove()
