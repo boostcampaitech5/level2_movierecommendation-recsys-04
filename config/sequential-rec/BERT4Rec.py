@@ -112,3 +112,31 @@ class Ver0_0_7(Ver0):
         self.parameter_dict["mask_ratio"] = 0.1
         self.parameter_dict["hidden_dropout_prob"] = 0.2
         self.parameter_dict["attn_dropout_prob"] = 0.2
+
+
+class Ver0_0_8(Ver0):  # Ver 0.0.7 - item_inter-num_interval
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["epochs"] = 200
+        self.parameter_dict["learning_rate"] = 0.0005
+        self.parameter_dict["save_dataset"] = False
+        self.parameter_dict["save_dataloaders"] = False
+        self.parameter_dict["stopping_step"] = 100
+        self.parameter_dict["MAX_ITEM_LIST_LENGTH"] = 200
+        self.parameter_dict["mask_ratio"] = 0.1
+        self.parameter_dict["hidden_dropout_prob"] = 0.2
+        self.parameter_dict["attn_dropout_prob"] = 0.2
+
+
+class Ver0_0_9(Ver0):
+    def __init__(self):  # Ver 0.0.8 - Max_ITEM_LIST_LENGTH
+        super().__init__()
+        self.parameter_dict["epochs"] = 200
+        self.parameter_dict["item_inter_num_interval"] = "[10,inf)"
+        self.parameter_dict["learning_rate"] = 0.0005
+        self.parameter_dict["save_dataset"] = False
+        self.parameter_dict["save_dataloaders"] = False
+        self.parameter_dict["stopping_step"] = 100
+        self.parameter_dict["mask_ratio"] = 0.1
+        self.parameter_dict["hidden_dropout_prob"] = 0.2
+        self.parameter_dict["attn_dropout_prob"] = 0.2
