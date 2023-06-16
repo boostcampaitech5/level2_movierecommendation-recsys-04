@@ -8,6 +8,8 @@ command:
   - "Caser"
   - --config_ver
   - "0_0_1"
+  - --sweep
+  - True
 method: bayes
 metric:
   name: valid/recall@10

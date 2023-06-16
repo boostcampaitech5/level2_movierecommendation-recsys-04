@@ -42,6 +42,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config_ver", "-c", type=str, default="0", help="version of configs"
     )
+    parser.add_argument(
+        "--sweep", "-s", type=bool, default=False, help="run sweep"
+    )
 
     args = parser.parse_args()
 
@@ -56,13 +59,15 @@ if __name__ == "__main__":
             f"Class 'Ver{args.config_ver}' not found in module '{args.model}'"
         )
 
-    try:
-        with open("./config.yaml") as file:
-            config_file = yaml.load(file, Loader=yaml.FullLoader)
+    sweep_name = ""
+    if args.sweep:
+        try:
+            with open("./config.yaml") as file:
+                config_file = yaml.load(file, Loader=yaml.FullLoader)
 
-        sweep_name = config_file["name"]
-    except FileNotFoundError:
-        sweep_name = ""
+            sweep_name = config_file["name"]
+        except FileNotFoundError:
+            print("There is no config.yaml file in the current path.")
 
     # init wandb settings
     wandb.init(project=f"Recbole-{args.model}", config=configs.parameter_dict)
@@ -80,7 +85,8 @@ if __name__ == "__main__":
         config["checkpoint_dir"], args.model, sweep_name
     )
 
-    print("configs : ", config)
+    if args.sweep:
+        print("configs : ", config)
 
     # init random seed
     init_seed(config["seed"], config["reproducibility"])
@@ -118,9 +124,8 @@ if __name__ == "__main__":
     ### trainer = Trainer(config, model)
     trainer = get_trainer(config["MODEL_TYPE"], config["model"])(config, model)
 
-    if sweep_name == "":  # when just train
+    if not args.sweep:  # when just train
         run_name = "{}_Ver_{}".format(config["model"], args.config_ver)
-        model_name = run_name + ".pth"
     else:  # when sweep
         sweep_run_num = wandb.run.name.split("-")[-1]
         run_name = "{}_Ver_{}_{}-{}".format(
