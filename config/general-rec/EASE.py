@@ -199,3 +199,24 @@ class Ver0_1_4(BaseConfig):
         self.parameter_dict = dict(
             self.base_parameter_dict, **self.parameter_dict
         )
+
+
+class Ver0_1_5(BaseConfig):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict = {
+            "load_col": {"inter": ["user", "item", "time"]},
+            "train_neg_sample_args": None,
+            "epochs": 1,
+            "topk": [10],
+            "eval_args": {
+                "split": {"LS": "test_only"},
+                "order": "RO",
+                "group_by": "user",
+                "mode": "full",
+            },
+            "reg_weight": 500,
+        }
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
