@@ -11,7 +11,7 @@ class Ver0(BaseConfig):
         self.parameter_dict = {  # Training Settings
             "load_col": {"inter": ["user", "item", "time"]},
             "neg_sampling": None,
-            "epochs": 100,
+            "epochs": 1,
             "train_batch_size": 2048,
             "learning_rate": 0.001,
             "stopping_step": 10,
@@ -19,19 +19,17 @@ class Ver0(BaseConfig):
             "topk": [10],  # Evaluation setting
             "eval_args": {
                 "split": {"LS": "valid_and_test"},  # {'RS': [0.8,0.1,0.1]}
-                "order": "TO",
+                "order": "RO",
                 "group_by": "user",
                 "mode": "full",
             },
             "metrics": ["Recall", "MRR", "NDCG", "Hit", "Precision"],
             "valid_metric": "Recall@10",
         }
-        self.parameter_dict = dict(
-            self.base_parameter_dict, **self.parameter_dict
-        )
+        self.parameter_dict = dict(self.base_parameter_dict, **self.parameter_dict)
 
 
-class Ver0_0_1(Ver0):
+class Ver0_0_1(Ver0):  # all parameter set defalut
     def __init__(self):
         super().__init__()
         # Model Hyper-Parameters
