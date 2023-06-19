@@ -5,11 +5,9 @@ import numpy as np
 import pandas as pd
 
 from tqdm import tqdm
-from recbole.utils import set_color
+from recbole.utils import set_color, init_seed
 from recbole.quick_start.quick_start import load_data_and_model
 from recbole.utils.case_study import full_sort_topk
-from recbole.data import data_preparation
-from recbole.data.utils import create_dataset
 from recbole.quick_start import load_data_and_model
 
 import warnings
@@ -31,13 +29,16 @@ if __name__ == "__main__":
         model,
         inference_dataset,
         _,
-        _,
+        inference_valid_data,
         inference_test_data,
     ) = load_data_and_model(args.model_path)
 
     # user, item id -> token 변환 array
     user_id = inference_config["USER_ID_FIELD"]
     item_id = inference_config["ITEM_ID_FIELD"]
+
+    # init random seed
+    init_seed(inference_config["seed"], inference_config["reproducibility"])
 
     user_id2token = inference_dataset.field2id_token[user_id]
     item_id2token = inference_dataset.field2id_token[item_id]
