@@ -1,0 +1,15 @@
+Ver0:
+  config_ver: 0
+  data_path: /opt/ml/input/data/train/train_ratings.csv
+  model: AdmmSlim
+  topk: 10
+  seed: 42
+  parameters: 
+    lambda_1: 1
+    lambda_2: 500
+    rho: 10000
+    positive: True
+    n_iter: 50
+    eps_rel: 0.0001
+    eps_abs: 0.001
+    verbose: False
