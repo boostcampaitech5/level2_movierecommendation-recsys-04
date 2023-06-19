@@ -1,0 +1,8 @@
+Ver0:
+  config_ver: 0
+  data_path: /opt/ml/input/data/train/train_ratings.csv
+  model: DenseSlim
+  topk: 10
+  seed: 42
+  parameters: 
+    lambda_2: 500
