@@ -111,3 +111,28 @@ class Ver0_0_5(BaseConfig):
         self.parameter_dict = dict(
             self.base_parameter_dict, **self.parameter_dict
         )
+
+
+class Ver0_1_0(BaseConfig):  # sota
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict = {
+            "load_col": {"inter": ["user", "item", "time"]},
+            "train_neg_sample_args": None,
+            "epochs": 200,
+            "topk": [10],
+            "eval_args": {
+                "split": {"LS": "valid_and_test"},
+                "order": "RO",
+                "group_by": "user",
+                "mode": "full",
+            },
+            "learning_rate": 0.004681,
+            "stopping_step": 10,
+            "weight_decay": 0.002926,
+            "latent_dimension": 128,
+            "mlp_hidden_size": [512],
+        }
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
