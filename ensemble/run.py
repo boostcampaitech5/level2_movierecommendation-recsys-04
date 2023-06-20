@@ -31,8 +31,12 @@ def main(args):
 
 
 def load_data(args):
-    model_1 = pd.read_csv(f"./submissions/{args.model_1}_sota.csv")
-    model_2 = pd.read_csv(f"./submissions/{args.model_2}_sota.csv")
+    model_1 = pd.read_csv(
+        f"./submissions/top{args.topk}/{args.model_1}_sota.csv"
+    )
+    model_2 = pd.read_csv(
+        f"./submissions/top{args.topk}/{args.model_2}_sota.csv"
+    )
 
     valid_set = pd.read_csv("./submissions/valid_set.csv")
 
@@ -95,6 +99,9 @@ def dual_custom_ensemble(ratio, submission_1, submission_2):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--topk", "-k", type=int, default=10, help="ensemble top k"
+    )
     parser.add_argument(
         "--ratio",
         "-r",
