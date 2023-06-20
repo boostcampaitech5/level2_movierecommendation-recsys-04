@@ -16,7 +16,7 @@ class Ensemble:
     file_path: 앙상블을 진행할 모델의 csv 파일이 저장된 경로를 입력합니다.
     """
 
-    def __init__(self, files: str, file_path: str):
+    def __init__(self, files: list, file_path: str):
         output_path = [
             file_path + file_name + ".csv" for file_name in files
         ]  # 앙상블 할 파일 경로 리스트
@@ -26,7 +26,6 @@ class Ensemble:
         self.output_frame = pd.read_csv(output_path[0]).iloc[
             :, 0
         ]  # 결과(submission) 파일의 프레임
-        self.output_df = self.output_frame.copy()
 
     def hard_voting(self):
         """
@@ -95,7 +94,7 @@ class Ensemble:
         # 결과 저장
         result = pd.concat(
             [
-                self.output_df,
+                self.output_frame,
                 pd.Series(selected_items),
             ],
             axis=1,
