@@ -85,16 +85,16 @@ if __name__ == "__main__":
         "--file_path",
         "-fp",
         type=str,
-        default="./output/ensembles/",
-        help='optional: 앙상블할 파일이 존재하는 경로를 전달합니다. (default:"./output/ensembles/")',
+        default="./submission/",
+        help='optional: 앙상블 할 submission 파일이 존재하는 경로를 전달합니다. (default:"./submission/")',
     )
 
     arg(
         "--result_path",
         "-rp",
         type=str,
-        default="./output/ensembles/result/",
-        help='optional: 앙상블 결과를 저장할 경로를 전달합니다. (default:"./output/ensembles/result/")',
+        default="./submission/ensembles/",
+        help='optional: 앙상블 결과를 저장할 경로를 전달합니다. (default:"./submission/ensembles/")',
     )
 
     arg(
