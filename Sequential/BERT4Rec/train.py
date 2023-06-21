@@ -15,7 +15,7 @@ from tqdm import tqdm
 def train(config):
     fix_random_seed(config["seed"])
 
-    os.mkdir("./saved")
+    os.makedirs("./saved", exist_ok=True)
 
     (
         user_ids,
@@ -80,7 +80,7 @@ def train(config):
 
         early_stopping_count += 1
         if loss < best_loss:
-            early_stopping_count += 1
+            early_stopping_count = 0
             best_loss = loss
             torch.save(
                 model,
