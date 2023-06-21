@@ -37,6 +37,13 @@ def get_parser():
         "--input_dir", "-i", type=str, default=None, help="targets filename"
     )
     parser.add_argument(
+        "--output_name",
+        "-n",
+        type=str,
+        default="sample_submission",
+        help="output filename",
+    )
+    parser.add_argument(
         "--output_path",
         "-o",
         type=str,
@@ -97,6 +104,6 @@ if __name__ == "__main__":
 
     print("########## Ensemble Output")
     output[["user", "item"]].to_csv(
-        os.path.join(output_dir, "sample_ensemble.csv"), index=False
+        os.path.join(output_dir, f"{args.output_name}.csv"), index=False
     )
-    print(f"save path : {os.path.join(output_dir, 'sample_ensemble.csv')}")
+    print(f"save path : {os.path.join(output_dir, f'{args.output_name}.csv')}")
