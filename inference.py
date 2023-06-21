@@ -60,7 +60,7 @@ if __name__ == "__main__":
             data,
             model,
             inference_test_data,
-            10,
+            15,
             device=inference_config.final_config_dict["device"],
         )
         batch_pred_list = batch_pred_list.clone().detach().cpu().numpy()
@@ -77,7 +77,7 @@ if __name__ == "__main__":
             user_list = np.append(user_list, data.numpy(), axis=0)
     tbar.close()
 
-    print("########## Top 10 recommended. to csv")
+    print("########## Top 15 recommended. to csv")
     answer = []
     for user, pred, score in zip(user_list, pred_list, pred_scores):
         for idx, item in enumerate(pred):

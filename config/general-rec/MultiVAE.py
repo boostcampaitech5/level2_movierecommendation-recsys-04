@@ -240,3 +240,27 @@ class Ver0_0_10(BaseConfig):
         self.parameter_dict = dict(
             self.base_parameter_dict, **self.parameter_dict
         )
+
+
+class Ver0_2_0(BaseConfig):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict = {
+            "load_col": {"inter": ["user", "item", "time"]},
+            "train_neg_sample_args": None,
+            "epochs": 200,
+            "topk": [10],
+            "eval_args": {
+                "split": {"LS": "valid_and_test"},
+                "order": "RO",
+                "group_by": "user",
+                "mode": "full",
+            },
+            "learning_rate": 0.0009603,
+            "latent_dimension": 256,
+            "mlp_hidden_size": [512],
+            "stopping_step": 20,
+        }
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
