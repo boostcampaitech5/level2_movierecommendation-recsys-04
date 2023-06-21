@@ -51,3 +51,19 @@ class Ver0(SequenceBaseConfig):
 class Ver0_0_1(Ver0):
     def __init__(self):
         super().__init__()
+
+
+class Ver1_0_0(Ver0):
+    """
+    Sweep 1차 고도화
+    valid : recall@10 = 0.1615
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict["dropout_prob"] = 0.1089
+        self.parameter_dict["embedding_size"] = 512
+        self.parameter_dict["epochs"] = 35
+        self.parameter_dict["hidden_size"] = 128
+        self.parameter_dict["learning_rate"] = 0.001194
+        self.parameter_dict["num_layers"] = 4
