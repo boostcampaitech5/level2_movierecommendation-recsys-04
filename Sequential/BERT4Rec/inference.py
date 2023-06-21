@@ -83,5 +83,8 @@ for step, key in enumerate(tbar):
 
 
 info = pd.DataFrame(final, columns=["user", "item", "score"])
-info.to_csv(os.path.join("./saved/", f'BERT4Rec_{config["version"]}.csv'))
+info.to_csv(
+    os.path.join("./saved/", f'BERT4Rec_{config["version"]}_{args.topk}.csv'),
+    index=False,
+)
 print("Inferencd Done")
