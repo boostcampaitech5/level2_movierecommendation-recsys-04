@@ -38,6 +38,7 @@ def load_data(args):
         f"./submissions/top{args.topk}/{args.model_2}_sota.csv"
     )
 
+
     valid_set = pd.read_csv("./submissions/valid_set.csv")
 
     return model_1, model_2, valid_set
