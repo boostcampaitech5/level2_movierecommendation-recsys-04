@@ -10,3 +10,17 @@ Ver0:
     lambdaCC: 10000
     rho: 50000
     n_iter: 40
+
+
+Vermake_valid_sample:
+  config_ver: make_valid_sample
+  data_path: /opt/ml/input/data/train/train_ratings.csv
+  model: HighOrderEASE
+  topk: 100
+  seed: 42
+  parameters: 
+    threshold: 3500
+    lambdaBB: 500
+    lambdaCC: 10000
+    rho: 50000
+    n_iter: 40
