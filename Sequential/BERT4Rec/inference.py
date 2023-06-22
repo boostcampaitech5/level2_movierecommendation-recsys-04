@@ -70,21 +70,27 @@ for step, key in enumerate(tbar):
     result = model(data)[0]
 
     t = result[0].detach().cpu()
+    t[data] = np.inf
+    mins = torch.min(t)
     t[data] = -np.inf
+    maxs = torch.max(t)
+
     top_k_idx = np.argpartition(t, -args.topk)[-args.topk :]
     rec_item_id = item_id[top_k_idx]
-    rec_item_score = t[top_k_idx]
+    rec_item_score = (t[top_k_idx] - mins) / (maxs - mins)
     user = user_ids[key]
 
+    tmp = []
     for item, score in zip(rec_item_id, rec_item_score):
-        final.append((user, item, score.item()))
+        tmp.append((user, item, score.item()))
 
+    final += sorted(tmp, key=lambda x: -x[2])
     tbar.set_description(f"step: {step:3d}")
 
 
 info = pd.DataFrame(final, columns=["user", "item", "score"])
 info.to_csv(
-    os.path.join("./saved/", f'BERT4Rec_{config["version"]}_{args.topk}.csv'),
+    os.path.join("./saved/", f'BERT4Rec_{config["version"]}_{args.topk}_.csv'),
     index=False,
 )
 print("Inferencd Done")
