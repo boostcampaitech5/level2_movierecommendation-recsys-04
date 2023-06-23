@@ -4,7 +4,7 @@ import torch.nn as nn
 import tqdm
 from torch.optim import Adam
 
-from .utils import ndcg_k, recall_at_k
+from utils import ndcg_k, recall_at_k
 
 
 class Trainer:
@@ -277,6 +277,7 @@ class FinetuneTrainer(Trainer):
 
             pred_list = None
             answer_list = None
+            score_list = None
             for i, batch in rec_data_iter:
                 batch = tuple(t.to(self.device) for t in batch)
                 user_ids, input_ids, _, target_neg, answers = batch
@@ -284,13 +285,18 @@ class FinetuneTrainer(Trainer):
 
                 recommend_output = recommend_output[:, -1, :]
 
+                # print(f"recommend_output : {recommend_output}")
+
                 rating_pred = self.predict_full(recommend_output)
 
                 rating_pred = rating_pred.cpu().data.numpy().copy()
+                # print(f"rating_pred 1: \n{rating_pred}")
+
                 batch_user_index = user_ids.cpu().numpy()
                 rating_pred[
                     self.args.train_matrix[batch_user_index].toarray() > 0
                 ] = 0
+                # print(f"rating_pred 2: \n{rating_pred}")
 
                 # 유저별로 rating_pred 정규화
                 row_min = np.min(rating_pred, axis=1, keepdims=True)
@@ -298,12 +304,15 @@ class FinetuneTrainer(Trainer):
                 rating_pred = (rating_pred - row_min) / (row_max - row_min)
 
                 ind = np.argpartition(rating_pred, -10)[:, -10:]
+                # print(f"ind: \n{ind}")
 
                 arr_ind = rating_pred[np.arange(len(rating_pred))[:, None], ind]
+                # print(f"arr_ind : \n{arr_ind}")
 
                 arr_ind_argsort = np.argsort(arr_ind)[
                     np.arange(len(rating_pred)), ::-1
                 ]
+                # print(f"arr_ind_argsort : \n{arr_ind_argsort}")
 
                 batch_pred_list = ind[
                     np.arange(len(rating_pred))[:, None], arr_ind_argsort

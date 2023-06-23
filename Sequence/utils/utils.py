@@ -152,18 +152,26 @@ def generate_rating_matrix_submission(user_seq, num_users, num_items):
     return rating_matrix
 
 
-def generate_submission_file(data_file, preds, scores):
+def generate_submission_file(data_file, preds, scores, prefix):
     rating_df = pd.read_csv(data_file)
     users = rating_df["user"].unique()
 
     result = []
+    result2 = []
+    for index, items in enumerate(preds):
+        for item_index, item in enumerate(items):
+            result.append((users[index], item, scores[index][item_index]))
 
-    for index, (items, item_scores) in enumerate(zip(preds, scores)):
-        for item, item_score in zip(items, item_scores):
-            result.append((users[index], item, item_score))
+    for index, items in enumerate(preds):
+        for item in items:
+            result2.append((users[index], item))
 
     pd.DataFrame(result, columns=["user", "item", "score"]).to_csv(
-        f"output/submission_with_item_score.csv", index=False
+        f"output/{prefix}_10_with_item_score.csv", index=False
+    )
+
+    pd.DataFrame(result2, columns=["user", "item"]).to_csv(
+        f"output/{prefix}_10.csv", index=False
     )
 
 
