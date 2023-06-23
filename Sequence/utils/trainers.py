@@ -292,6 +292,11 @@ class FinetuneTrainer(Trainer):
                     self.args.train_matrix[batch_user_index].toarray() > 0
                 ] = 0
 
+                # 유저별로 rating_pred 정규화
+                row_min = np.min(rating_pred, axis=1, keepdims=True)
+                row_max = np.max(rating_pred, axis=1, keepdims=True)
+                rating_pred = (rating_pred - row_min) / (row_max - row_min)
+
                 ind = np.argpartition(rating_pred, -10)[:, -10:]
 
                 arr_ind = rating_pred[np.arange(len(rating_pred))[:, None], ind]
@@ -304,16 +309,22 @@ class FinetuneTrainer(Trainer):
                     np.arange(len(rating_pred))[:, None], arr_ind_argsort
                 ]
 
+                batch_score_list = arr_ind[
+                    np.arange(len(rating_pred))[:, None], arr_ind_argsort
+                ]
+
                 if i == 0:
                     pred_list = batch_pred_list
+                    score_list = batch_score_list
                     answer_list = answers.cpu().data.numpy()
                 else:
                     pred_list = np.append(pred_list, batch_pred_list, axis=0)
+                    score_list = np.append(score_list, batch_score_list, axis=0)
                     answer_list = np.append(
                         answer_list, answers.cpu().data.numpy(), axis=0
                     )
 
             if mode == "submission":
-                return pred_list
+                return pred_list, score_list
             else:
                 return self.get_full_sort_score(epoch, answer_list, pred_list)
