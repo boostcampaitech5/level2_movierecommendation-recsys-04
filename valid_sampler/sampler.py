@@ -1,4 +1,5 @@
 import os
+import natsort
 import numpy as np
 import pandas as pd
 
@@ -8,75 +9,33 @@ import argparse
 
 
 def main(args):
+    global all_files_columns
     print("##### Load data ...")
-    data_dict = load_data()
+    inters, submissions, all_files_path = load_data()
+    all_files_columns = [file[:4] for file in all_files_path]
     print("##### Load data done!")
-
-    seed_list = []
-    EASE_origin_recall_list = []
-    EASE_upgrade_recall_list = []
-    Dense_Slim_origin_recall_list = []
-    # Dense_Slim_upgrade_recall_list = []
-    Admm_Slim_origin_recall_list = []
-    # Admm_Slim_upgrade_recall_list = []
-    MultiDAE_origin_recall_list = []
-    MultiDAE_upgrade_recall_list = []
-    MultiVAE_origin_recall_list = []
-    MultiVAE_upgrade_recall_list = []
-    RecVAE_origin_recall_list = []
-    RecVAE_upgrade_recall_list = []
-    SASRec_origin_recall_list = []
-    SASRec_upgrade_recall_list = []
 
     print("##### Start searching seed ...")
     np.random.seed(args.start_seed)
     seeds = np.random.randint(0, 10000, args.n_iters)
 
+    valid_result = pd.DataFrame(
+        np.zeros((args.n_iters, len(all_files_columns) + 1)),
+        columns=["seed"] + all_files_columns,
+    )
     for i in tqdm(
         range(args.n_iters),
         desc="running ...",
     ):
         seed = seeds[i]
-        recall_result_dict = run(seed, data_dict)
-        seed_list.append(seed)
-        EASE_origin_recall_list.append(recall_result_dict["origin"][0])
-        Dense_Slim_origin_recall_list.append(recall_result_dict["origin"][1])
-        Admm_Slim_origin_recall_list.append(recall_result_dict["origin"][2])
-        MultiDAE_origin_recall_list.append(recall_result_dict["origin"][3])
-        RecVAE_origin_recall_list.append(recall_result_dict["origin"][4])
-        MultiVAE_origin_recall_list.append(recall_result_dict["origin"][5])
-        SASRec_origin_recall_list.append(recall_result_dict["origin"][6])
+        recall_list = []
+        recall_list.append(run(seed, inters, submissions))
+        valid_result.loc[i, "seed"] = seed
 
-        EASE_upgrade_recall_list.append(recall_result_dict["upgrade"][0])
-        # Dense_Slim_upgrade_recall_list.append(recall_result_dict["upgrade"][1])
-        # Admm_Slim_upgrade_recall_list.append(recall_result_dict["upgrade"][2])
-        MultiDAE_upgrade_recall_list.append(recall_result_dict["upgrade"][1])
-        RecVAE_upgrade_recall_list.append(recall_result_dict["upgrade"][2])
-        MultiVAE_upgrade_recall_list.append(recall_result_dict["upgrade"][3])
-        SASRec_upgrade_recall_list.append(recall_result_dict["upgrade"][4])
+        for j in range(len(all_files_columns)):
+            valid_result.iloc[i, j + 1] = recall_list[0][j]
 
     print("##### Searching done!")
-    valid_result = pd.DataFrame(
-        {
-            "seed": seed_list,
-            # origin
-            "EASE_origin": EASE_origin_recall_list,
-            "Dense_Slim_origin": Dense_Slim_origin_recall_list,
-            "Admm_Slim_origin": Admm_Slim_origin_recall_list,
-            "MultiDAE_origin": MultiDAE_origin_recall_list,
-            "RecVAE_origin": RecVAE_origin_recall_list,
-            "MultiVAE_origin": MultiVAE_origin_recall_list,
-            "SASRec_origin": SASRec_origin_recall_list,
-            # upgrade
-            "EASE_upgrade": EASE_upgrade_recall_list,
-            "MultiDAE_upgrade": MultiDAE_upgrade_recall_list,
-            "RecVAE_upgrade": RecVAE_upgrade_recall_list,
-            "MultiVAE_upgrade": MultiVAE_upgrade_recall_list,
-            "SASRec_upgrade": SASRec_upgrade_recall_list,
-        }
-    )
-
-    # 현재 기준 EASE > DenseSlim > AdmmSlim > MultiDAE > RecVAE > MultiVAE > SASRec
     valid_result["use_valid"] = False
 
     valid_result = valid_result.apply(lambda x: check_use_valid(x), axis=1)
@@ -92,34 +51,21 @@ def main(args):
 
 
 def check_use_valid(x):
-    origin_cond = (
-        x["Dense_Slim_origin"]
-        >= x["Admm_Slim_origin"]
-        >= x["EASE_origin"]
-        >= x["MultiDAE_origin"]
-        >= x["RecVAE_origin"]
-        >= x["MultiVAE_origin"]
-        >= x["SASRec_origin"]
+    global all_files_columns
+    is_sorted = all(
+        x.iloc[i + 1] <= x.iloc[i + 2]
+        for i in range(len(all_files_columns) - 1)
     )
-    upgrade_cond = (
-        (x["EASE_upgrade"] >= x["EASE_origin"])
-        & (x["MultiDAE_upgrade"] >= x["MultiDAE_origin"])
-        & (x["RecVAE_upgrade"] >= x["RecVAE_origin"])
-        & ((x["MultiVAE_upgrade"] >= x["MultiVAE_origin"]))
-        & (x["SASRec_upgrade"] >= x["SASRec_origin"])
-    )
-
-    if origin_cond & upgrade_cond:
-        x["use_valid"] = True
+    x["use_valid"] = is_sorted
 
     return x
 
 
-def sampling(seed, sota, k=10):
+def sampling(seed, inters, k=10):
     np.random.seed(seed)
 
     # 그룹화된 데이터프레임 생성
-    grouped = sota.groupby("user")
+    grouped = inters.groupby("user")
 
     # 각 그룹에서 임의의 인덱스 선택
     shuffled_indices = grouped.apply(
@@ -127,7 +73,7 @@ def sampling(seed, sota, k=10):
     )
 
     # 선택된 인덱스를 사용하여 해당 행을 가져옴
-    result = sota.loc[shuffled_indices.explode()]
+    result = inters.loc[shuffled_indices.explode()]
 
     # 결과 데이터프레임 생성
     result = result.reset_index(drop=True)
@@ -160,92 +106,30 @@ def compute_recall(actual, predicted):
     return round((sum_recall / true_users) * 100, 5)  # 비교를 편리하게 하기 위해 100 을 곱해줌
 
 
-def run(seed, data_dict):
-    result = sampling(seed, data_dict["sota"])
-    EASE_origin_recall = compute_recall(result, data_dict["origin"][0])
-    Dense_Slim_origin_recall = compute_recall(result, data_dict["origin"][1])
-    Admm_Slim_origin_recall = compute_recall(result, data_dict["origin"][2])
-    MultiDAE_origin_recall = compute_recall(result, data_dict["origin"][3])
-    RecVAE_origin_recall = compute_recall(result, data_dict["origin"][4])
-    MultiVAE_origin_recall = compute_recall(result, data_dict["origin"][5])
-    SASRec_origin_recall = compute_recall(result, data_dict["origin"][6])
+def run(seed, inters: pd.DataFrame, submissions: list):
+    result = sampling(seed, inters)
 
-    EASE_upgrade_recall = compute_recall(result, data_dict["upgrade"][0])
-    # Dense_Slim_upgrade_recall = compute_recall(result, data_dict["Dense_Slim"])
-    # Admm_Slim_upgrade_recall = compute_recall(result, data_dict["Admm_Slim"])
-    MultiDAE_upgrade_recall = compute_recall(result, data_dict["upgrade"][1])
-    RecVAE_upgrade_recall = compute_recall(result, data_dict["upgrade"][2])
-    MultiVAE_upgrade_recall = compute_recall(result, data_dict["upgrade"][3])
-    SASRec_upgrade_recall = compute_recall(result, data_dict["upgrade"][4])
+    recalls = []
+    for submission in submissions:
+        recalls.append(compute_recall(result, submission))
 
-    return dict(
-        {
-            "origin": [
-                EASE_origin_recall,
-                Dense_Slim_origin_recall,
-                Admm_Slim_origin_recall,
-                MultiDAE_origin_recall,
-                RecVAE_origin_recall,
-                MultiVAE_origin_recall,
-                SASRec_origin_recall,
-            ],
-            "upgrade": [
-                EASE_upgrade_recall,
-                # Dense_Slim_upgrade_recall,
-                # Admm_Slim_upgrade_recall,
-                MultiDAE_upgrade_recall,
-                RecVAE_upgrade_recall,
-                MultiVAE_upgrade_recall,
-                SASRec_upgrade_recall,
-            ],
-        }
-    )
+    return recalls
 
 
 def load_data():
-    inters = pd.read_csv("/opt/ml/input/data/train/train_ratings.csv")
-    inters = inters.drop(columns="time")
-    sota_top100 = pd.read_csv("./submissions/HighOrderEASE_top100.csv")
+    all_files_path = os.listdir("./submissions/")
+    all_files_path = natsort.natsorted(all_files_path)
 
-    EASE_origin = pd.read_csv("./submissions/EASE_origin.csv")
-    Dense_Slim_origin = pd.read_csv("./submissions/DenseSlim_origin.csv")
-    Admm_Slim_origin = pd.read_csv("./submissions/AdmmSlim_origin.csv")
-    MultiDAE_origin = pd.read_csv("./submissions/MultiDAE_origin.csv")
-    RecVAE_origin = pd.read_csv("./submissions/RecVAE_origin.csv")
-    MultiVAE_origin = pd.read_csv("./submissions/MultiVAE_origin.csv")
-    SASRec_origin = pd.read_csv("./submissions/SASRec_origin.csv")
+    submissions = []
+    for file in tqdm(all_files_path):
+        submissions.append(pd.read_csv("./submissions/" + file))
 
-    EASE_upgrade = pd.read_csv("./submissions/EASE_upgrade.csv")
-    # Dense_Slim_upgrade = pd.read_csv("./submissions/DenseSlim_upgrade.csv")
-    # Admm_Slim_upgrade = pd.read_csv("./submissions/AdmmSlim_upgrade.csv")
-    MultiDAE_upgrade = pd.read_csv("./submissions/MultiDAE_upgrade.csv")
-    MultiVAE_upgrade = pd.read_csv("./submissions/MultiVAE_upgrade.csv")
-    RecVAE_upgrade = pd.read_csv("./submissions/RecVAE_upgrade.csv")
-    SASRec_upgrade = pd.read_csv("./submissions/SASRec_upgrade.csv")
-
-    return dict(
-        {
-            "sota": sota_top100,
-            "origin": [
-                EASE_origin,
-                Dense_Slim_origin,
-                Admm_Slim_origin,
-                MultiDAE_origin,
-                RecVAE_origin,
-                MultiVAE_origin,
-                SASRec_origin,
-            ],
-            "upgrade": [
-                EASE_upgrade,
-                # Dense_Slim_upgrade,
-                # Admm_Slim_upgrade,
-                MultiDAE_upgrade,
-                RecVAE_upgrade,
-                MultiVAE_upgrade,
-                SASRec_upgrade,
-            ],
-        }
+    # inters = pd.read_csv("/opt/ml/input/data/train/train_ratings.csv")
+    inters = pd.read_csv(
+        "/opt/ml/level2_movierecommendation-recsys-04/ensemble/submissions/ensembles/soft-0.40-0.60(SASRec_sota_with_item_scores+HighOrderEASE_sota_with_item_scores).csv"
     )
+    # inters = inters.drop(columns="time")
+    return inters, submissions, all_files_path
 
 
 if __name__ == "__main__":

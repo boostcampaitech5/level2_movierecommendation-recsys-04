@@ -71,16 +71,14 @@ class Ensemble:
 
         for file in self.output_list:
             df_item = pd.concat([df_item, file["item"]], axis=1)
-            df_item_score = pd.concat(
-                [df_item_score, file["item_score"]], axis=1
-            )
+            df_item_score = pd.concat([df_item_score, file["score"]], axis=1)
 
         # 각 모델별로 item score 계산 방법이 다르므로 정규화 진행
-        scaler = MinMaxScaler()
-        df_scaled = scaler.fit_transform(df_item_score["item_score"])
+        # scaler = MinMaxScaler()
+        # df_scaled = scaler.fit_transform(df_item_score["score"])
 
         # weighted item score 계산
-        weighted_scores = df_scaled * np.array(w_list)
+        weighted_scores = np.array(df_item_score["score"]) * np.array(w_list)
 
         # weighted item score가 최대인 모델 인덱스를 구함
         max_indices = np.argmax(weighted_scores, axis=1)
