@@ -6,15 +6,17 @@ class Ver0(BaseConfig):
         super().__init__()
         self.parameter_dict = {
             "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 2,
+            "train_neg_sample_args": None,
+            "epochs": 1,
             "topk": [10],
             "eval_args": {
                 "split": {"LS": "valid_and_test"},
-                "order": "TO",
+                "order": "RO",
                 "group_by": "user",
                 "mode": "full",
             },
+            "learning_rate": 0.001,
+            "stopping_step": 10,  # default
         }
         self.parameter_dict = dict(
             self.base_parameter_dict, **self.parameter_dict
@@ -26,17 +28,18 @@ class Ver0_0_1(BaseConfig):
         super().__init__()
         self.parameter_dict = {
             "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 100,
+            "train_neg_sample_args": None,
+            "epochs": 1,
             "topk": [10],
             "eval_args": {
                 "split": {"LS": "valid_and_test"},
-                "order": "TO",
+                "order": "RO",
                 "group_by": "user",
                 "mode": "full",
             },
-            "latent_dimendion": [64],  # 128 -> 64
-            "mlp_hidden_size": [200],  # 600 -> 200
+            "learning_rate": 0.001,
+            "stopping_step": 10,  # default
+            "reg_weight": 100,
         }
         self.parameter_dict = dict(
             self.base_parameter_dict, **self.parameter_dict
@@ -48,18 +51,18 @@ class Ver0_0_2(BaseConfig):
         super().__init__()
         self.parameter_dict = {
             "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 100,
+            "train_neg_sample_args": None,
+            "epochs": 1,
             "topk": [10],
             "eval_args": {
                 "split": {"LS": "valid_and_test"},
-                "order": "TO",
+                "order": "RO",
                 "group_by": "user",
                 "mode": "full",
             },
-            "latent_dimendion": [64],  # 128 -> 64
-            "mlp_hidden_size": [200],  # 600 -> 200
-            "learning_rate": 0.005,  # 0.001 -> 0.005
+            "learning_rate": 0.001,
+            "stopping_step": 10,  # default
+            "reg_weight": 500,
         }
         self.parameter_dict = dict(
             self.base_parameter_dict, **self.parameter_dict
@@ -71,162 +74,8 @@ class Ver0_0_3(BaseConfig):
         super().__init__()
         self.parameter_dict = {
             "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 100,
-            "topk": [10],
-            "eval_args": {
-                "split": {"LS": "valid_and_test"},
-                "order": "TO",
-                "group_by": "user",
-                "mode": "full",
-            },
-            "latent_dimendion": [64],  # 128 -> 64
-            "mlp_hidden_size": [200],  # 600 -> 200
-            "learning_rate": 0.0005,  # 0.001 -> 0.0005
-        }
-        self.parameter_dict = dict(
-            self.base_parameter_dict, **self.parameter_dict
-        )
-
-
-class Ver0_0_4(BaseConfig):
-    def __init__(self):
-        super().__init__()
-        self.parameter_dict = {
-            "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 300,
-            "topk": [10],
-            "eval_args": {
-                "split": {"LS": "valid_and_test"},
-                "order": "TO",
-                "group_by": "user",
-                "mode": "full",
-            },
-            "latent_dimendion": [64],  # 128 -> 64
-            "mlp_hidden_size": [200],  # 600 -> 200
-            "learning_rate": 0.0005,  # 0.001 -> 0.0005
-        }
-        self.parameter_dict = dict(
-            self.base_parameter_dict, **self.parameter_dict
-        )
-
-
-class Ver0_0_5(BaseConfig):
-    def __init__(self):
-        super().__init__()
-        self.parameter_dict = {
-            "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 100,
-            "topk": [50],
-            "metrics": ["NDCG"],
-            "valid_metric": "NDCG@50",
-            "eval_args": {
-                "split": {"LS": "valid_and_test"},
-                "order": "TO",
-                "group_by": "user",
-                "mode": "full",
-            },
-        }
-        self.parameter_dict = dict(
-            self.base_parameter_dict, **self.parameter_dict
-        )
-
-
-class Ver0_0_6(BaseConfig):
-    def __init__(self):
-        super().__init__()
-        self.parameter_dict = {
-            "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 2,
-            "topk": [10],
-            "eval_args": {
-                "split": {"LS": "valid_and_test"},
-                "order": "TO",
-                "group_by": "user",
-                "mode": "full",
-            },
-            "train_batch_size": 256,  # 2048 -> 256
-        }
-        self.parameter_dict = dict(
-            self.base_parameter_dict, **self.parameter_dict
-        )
-
-
-class Ver0_0_7(BaseConfig):
-    def __init__(self):
-        super().__init__()
-        self.parameter_dict = {
-            "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 200,
-            "topk": [10],
-            "eval_args": {
-                "split": {"LS": "valid_and_test"},
-                "order": "TO",
-                "group_by": "user",
-                "mode": "full",
-            },
-            "dropout_prob": 0.1,  # 0.5 -> 0.1
-            "stopping_step": 20,  # 10 -> 20
-        }
-        self.parameter_dict = dict(
-            self.base_parameter_dict, **self.parameter_dict
-        )
-
-
-class Ver0_0_8(BaseConfig):
-    def __init__(self):
-        super().__init__()
-        self.parameter_dict = {
-            "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 100,
-            "topk": [10],
-            "eval_args": {
-                "split": {"LS": "valid_and_test"},
-                "order": "TO",
-                "group_by": "user",
-                "mode": "full",
-            },
-            "seed": 42,  # 2020 -> 42
-            "stopping_step": 20,  # 10 -> 20
-        }
-        self.parameter_dict = dict(
-            self.base_parameter_dict, **self.parameter_dict
-        )
-
-
-class Ver0_0_9(BaseConfig):
-    def __init__(self):
-        super().__init__()
-        self.parameter_dict = {
-            "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 200,
-            "topk": [10],
-            "eval_args": {
-                "split": {"RS": [0.8, 0.1, 0.1]},
-                "order": "TO",
-                "group_by": "user",
-                "mode": "full",
-            },
-            "stopping_step": 20,  # 10 -> 20
-        }
-        self.parameter_dict = dict(
-            self.base_parameter_dict, **self.parameter_dict
-        )
-
-
-class Ver0_0_10(BaseConfig):
-    def __init__(self):
-        super().__init__()
-        self.parameter_dict = {
-            "load_col": {"inter": ["user", "item", "time"]},
-            "neg_sampling": None,
-            "epochs": 500,
+            "train_neg_sample_args": None,
+            "epochs": 1,
             "topk": [10],
             "eval_args": {
                 "split": {"LS": "valid_and_test"},
@@ -234,21 +83,64 @@ class Ver0_0_10(BaseConfig):
                 "group_by": "user",
                 "mode": "full",
             },
-            "learning_rate": 0.0001,  # 0.001 -> 0.0001
-            "stopping_step": 20,  # 10 -> 20
+            "learning_rate": 0.001,
+            "stopping_step": 10,  # default
+            "reg_weight": 1000,
         }
         self.parameter_dict = dict(
             self.base_parameter_dict, **self.parameter_dict
         )
 
 
-class Ver0_2_0(BaseConfig):
+class Ver0_1_0(BaseConfig):
     def __init__(self):
         super().__init__()
         self.parameter_dict = {
             "load_col": {"inter": ["user", "item", "time"]},
             "train_neg_sample_args": None,
-            "epochs": 200,
+            "epochs": 1,
+            "topk": [i for i in range(10, 31)],
+            "eval_args": {
+                "split": {"LS": "valid_and_test"},
+                "order": "RO",
+                "group_by": "user",
+                "mode": "full",
+            },
+            "reg_weight": 500,
+        }
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
+
+
+class Ver0_1_1(BaseConfig):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict = {
+            "load_col": {"inter": ["user", "item", "time"]},
+            "train_neg_sample_args": None,
+            "epochs": 1,
+            "topk": [i for i in range(10, 21)],
+            "eval_args": {
+                "split": {"LS": "valid_and_test"},
+                "order": "RO",
+                "group_by": "user",
+                "mode": "full",
+            },
+            "reg_weight": 500,
+        }
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
+
+
+class Ver0_1_2(BaseConfig):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict = {
+            "load_col": {"inter": ["user", "item", "time"]},
+            "train_neg_sample_args": None,
+            "epochs": 1,
             "topk": [10],
             "eval_args": {
                 "split": {"LS": "valid_and_test"},
@@ -256,10 +148,74 @@ class Ver0_2_0(BaseConfig):
                 "group_by": "user",
                 "mode": "full",
             },
-            "learning_rate": 0.0009603,
-            "latent_dimension": 256,
-            "mlp_hidden_size": [512],
-            "stopping_step": 20,
+            "reg_weight": 500,
+            "seed": 8,
+        }
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
+
+
+class Ver0_1_3(BaseConfig):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict = {
+            "load_col": {"inter": ["user", "item", "time"]},
+            "train_neg_sample_args": None,
+            "epochs": 1,
+            "topk": [10],
+            "eval_args": {
+                "split": {"LS": "valid_and_test"},
+                "order": "RO",
+                "group_by": "user",
+                "mode": "full",
+            },
+            "reg_weight": 500,
+            "seed": 2,
+        }
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
+
+
+class Ver0_1_4(BaseConfig):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict = {
+            "load_col": {"inter": ["user", "item", "time"]},
+            "train_neg_sample_args": None,
+            "epochs": 1,
+            "topk": [15],
+            "eval_args": {
+                "split": {"LS": "valid_and_test"},
+                "order": "RO",
+                "group_by": "user",
+                "mode": "full",
+            },
+            "valid_metric": "Recall@15",
+            "reg_weight": 500,
+            "seed": 11,
+        }
+        self.parameter_dict = dict(
+            self.base_parameter_dict, **self.parameter_dict
+        )
+
+
+class Ver0_1_5(BaseConfig):
+    def __init__(self):
+        super().__init__()
+        self.parameter_dict = {
+            "load_col": {"inter": ["user", "item", "time"]},
+            "train_neg_sample_args": None,
+            "epochs": 1,
+            "topk": [10],
+            "eval_args": {
+                "split": {"LS": "test_only"},
+                "order": "RO",
+                "group_by": "user",
+                "mode": "full",
+            },
+            "reg_weight": 500,
         }
         self.parameter_dict = dict(
             self.base_parameter_dict, **self.parameter_dict

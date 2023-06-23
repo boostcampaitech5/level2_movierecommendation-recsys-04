@@ -1,0 +1,18 @@
+Ver0:
+  config_ver: 0
+  data_path: /opt/ml/input/data/train/train_ratings.csv
+  model: EASE
+  topk: 10
+  seed: 42
+  parameters: 
+    reg_weight: 500
+
+
+Ver1:
+  config_ver: 1
+  data_path: /opt/ml/input/data/train/train_ratings.csv
+  model: EASE
+  topk: 15
+  seed: 42
+  parameters: 
+    reg_weight: 500
