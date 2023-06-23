@@ -2,12 +2,23 @@ import os
 import numpy as np
 import argparse
 
-from ensembles.ensembles import Ensemble
+from voting import Ensemble
+
+
+def get_file_list(directory):
+    file_list = []
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if os.path.isfile(file_path):
+            file_list.append(filename[:-4])
+    return file_list
 
 
 def main(args):
-    files = args.files[0]
-
+    if args.file_path:
+        files = get_file_list(args.file_path)
+    else:
+        files = args.files[0]
     if args.weight is None:  # 가중치를 주지 않았을 경우
         w_list = [1 / len(files)] * len(files)  # 동일한 가중치 부여
     else:
@@ -24,8 +35,6 @@ def main(args):
         raise ValueError("2개 이상의 모델이 필요합니다.")
     if not len(files) == len(w_list):
         raise ValueError("model과 weight의 길이가 일치하지 않습니다.")
-    if np.sum(w_list) != 1:
-        raise ValueError("weight의 합이 1이 되도록 입력해 주세요.")
 
     # 앙상블 전략에 따라 수행
     if args.strategy == "hard":
@@ -58,7 +67,8 @@ if __name__ == "__main__":
         "--files",
         "-f",
         nargs="+",
-        required=True,
+        default=None,
+        # required=True,
         type=lambda s: [item for item in s.split(",")],
         help="required: 앙상블 할 submission 파일명을 쉼표(,)로 구분하여 모두 입력해 주세요. (.csv와 같은 확장자는 입력하지 않습니다.)",
     )
@@ -85,7 +95,8 @@ if __name__ == "__main__":
         "--file_path",
         "-fp",
         type=str,
-        default="./submissions/",
+        # default="./submissions/ensembles/",
+        default=None,
         help='optional: 앙상블 할 submission 파일이 존재하는 경로를 전달합니다. (default:"./submissions/")',
     )
 
@@ -93,7 +104,7 @@ if __name__ == "__main__":
         "--result_path",
         "-rp",
         type=str,
-        default="./submissions/ensembles/",
+        default="./submissions/final/",
         help='optional: 앙상블 결과를 저장할 경로를 전달합니다. (default:"./submissions/ensembles/")',
     )
 
