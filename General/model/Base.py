@@ -58,6 +58,8 @@ class Base:
         watched = set(group["ci"])
         candidates = [item for item in items if item not in watched]
         pred = np.take(pred, candidates)
+        pred = (pred - min(pred)) / (max(pred) - min(pred))
+
         res = np.argpartition(pred, -k)[-k:]
         r = pd.DataFrame(
             {
