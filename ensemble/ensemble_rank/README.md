@@ -1,13 +1,12 @@
-## Ensemble Base
-Hard Voting, Soft Voting 앙상블 기법
-
-`Hard Voting`
+## Ensemble Rank
+등수별 가중치를 적용한 soft voting(모델별 가중치)
+ 
+`input -> files`
 ```bash
-python run_voting.py --strategy 'hard' --file_path './submissions/ensembles/'
-python run_voting.py --files ease,sasrec --strategy 'hard'
+python ensemble.py --strategy 'hard' --file_path './submissions/rank_files/' 
 ```
 
-`Soft Voting`
+`input -> weights`
 ```bash
-python run_voting.py --files ease,sasrec --strategy 'soft' --weight 0.7,0.3
+python ensemble.py --rank_weight '0.7,0.3' --model_weight '0.1065,0.0944,0.1349,0.1551,0.1386,0.0754,0.1614,0.1405'
 ```
