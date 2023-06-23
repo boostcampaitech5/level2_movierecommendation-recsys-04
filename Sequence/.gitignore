@@ -423,15 +423,13 @@ $RECYCLE.BIN/
 # poetry
 poetry.lock
 
-### MovieRec 프로젝트
-*.inter
-*.item
-*.user
+### MovieRec-Sequence 프로젝트
 .empty
+*.tsv
+output
 
 wandb
 log
-log_tensorboard
 saved
 
 .vscode
