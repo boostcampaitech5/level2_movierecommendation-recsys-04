@@ -10,7 +10,9 @@
 - [x] Ensemble - Rank (Soft + 등수별 Weight)
 - [x] Validation Set
 
-1. [Ensemble- Basic](./ensemble_base/)
+1. [Ensemble- Basic](./ensemble_base/README.md)
+2. [Ensemble- Seq](./ensemble_seq/README.md)
+3. [Ensemble- Rank](./ensemble_rank/README.md)
 
 
 ## See Also
