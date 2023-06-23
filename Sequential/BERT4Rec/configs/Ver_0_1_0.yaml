@@ -1,0 +1,22 @@
+# config setting
+version : '0_1_0'
+
+# data setting
+data_path : '/opt/ml/input/data/train/train_ratings.csv'
+
+# Hyper-parameters
+max_len : 300
+hidden_units : 100
+num_heads : 2
+num_layers : 4
+dropout_rate : 0.2
+num_workers : 1
+device : 'cuda'
+
+# training setting
+lr : 0.001
+batch_size : 128
+num_epochs : 200
+mask_prob : 0.05
+seed : 42
+early_stopping : 20
