@@ -25,57 +25,54 @@ wandb==0.15.3
 ### 1-3.  프로젝트 구조 및 사용 데이터셋의 구조도(연관도)
 <details>
 <summary>프로젝트 구조 및 사용 데이터셋의 구조도(연관도)</summary>
-<div markdown="1">
-```bash
-📦level2_movierecommendation-recsys-04
- ┣ 📂.github
- ┃ ┣ 📂ISSUE_TEMPLATE
- ┃ ┃ ┣ 📜버그-수정.md
- ┃ ┃ ┗ 📜새로운-기능-추가.md
- ┃ ┗ 📜PULL_REQUEST_TEMPLATE.md
- ┣ 📂General
- ┃ ┣ 📂config
- ┃ ┣ 📂model
- ┃ ┣ 📜run.py
- ┃ ┗ 📜utils.py
- ┣ 📂RecBole
- ┃ ┣ 📂config
- ┃ ┃ ┣ 📂general-rec
- ┃ ┃ ┗ 📂sequential-rec
- ┃ ┣ 📜inference.py
- ┃ ┣ 📜setup.py
- ┃ ┣ 📜sweep_config.yaml
- ┃ ┗ 📜train.py
- ┣ 📂Sequence
- ┃ ┣ 📂BERT4Rec
- ┃ ┃ ┣ 📜dataset.py
- ┃ ┃ ┣ 📜inference.py
- ┃ ┃ ┣ 📜models.py
- ┃ ┃ ┣ 📜preprocessing.py
- ┃ ┃ ┣ 📜train.py
- ┃ ┃ ┗ 📜utils.py
- ┃ ┣ 📂SASRec
- ┃ ┃ ┣ 📂utils
- ┃ ┃ ┃ ┣ 📜args.py
- ┃ ┃ ┃ ┣ 📜datasets.py
- ┃ ┃ ┃ ┣ 📜models.py
- ┃ ┃ ┃ ┣ 📜trainers.py
- ┃ ┃ ┃ ┗ 📜utils.py
- ┃ ┃ ┣ 📜run.py
- ┃ ┃ ┗ 📜setup.py
- ┣ 📂ensemble
- ┃ ┣ 📂ensemble_base
- ┃ ┃ ┣ 📜run_voting.py
- ┃ ┃ ┗ 📜voting.py
- ┃ ┣ 📂ensemble_rank
- ┃ ┃ ┗ 📜ensemble.py
- ┃ ┣ 📂ensemble_seq
- ┃ ┃ ┗ 📜ensemble_seq.py
- ┣ 📂valid_sampler
- ┃ ┣ 📜get_sample.py
- ┗ ┗ 📜sampler.py
-```
-</div>
+<pre>
+📦 level2_movierecommendation-recsys-04
+├─ .github
+│   ├─ ISSUE_TEMPLATE
+│   │   ├─ 버그-수정.md
+│   │   └─ 새로운-기능-추가.md
+│   └─ PULL_REQUEST_TEMPLATE.md
+├─ General
+│   ├─ config
+│   ├─ model
+│   ├─ run.py
+│   └─ utils.py
+├─ RecBole
+│   ├─ config
+│   │   ├─ general-rec
+│   │   └─ sequential-rec
+│   ├─ inference.py
+│   ├─ setup.py
+│   ├─ sweep_config.yaml
+│   └─ train.py
+├─ Sequence
+│   ├─ BERT4Rec
+│   │   ├─ dataset.py
+│   │   ├─ inference.py
+│   │   ├─ models.py
+│   │   ├─ preprocessing.py
+│   │   ├─ train.py
+│   │   └─ utils.py
+│   └─ SASRec
+│       ├─ utils
+│       │   ├─ args.py
+│       │   ├─ datasets.py
+│       │   ├─ models.py
+│       │   ├─ trainers.py
+│       │   └─ utils.py
+│       ├─ run.py
+│       └─ setup.py
+├─ ensemble
+│   ├─ ensemble_base
+│   │   ├─ run_voting.py
+│   │   └─ voting.py
+│   ├─ ensemble_rank
+│   │   └─ ensemble.py
+│   └─ ensemble_seq
+│       └─ ensemble_seq.py
+└─ valid_sampler
+    └─ get_sample.py
+</pre>
 </details>
 
 
